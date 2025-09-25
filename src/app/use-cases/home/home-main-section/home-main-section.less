@@ -1,0 +1,35 @@
+:host {
+    display: block;
+    position: relative; // Wichtig für z-index Kontext
+    
+    section {
+        width: 100vw;
+        height: 100vh;
+        background-image: url('/assets/gradient.jpg');
+        background-size: cover;
+        background-position: center;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        // grid-template-rows: 20% 12.5% 20% 20% auto;
+    }
+
+    div {
+        display: flex;
+        margin: 0;
+        padding: 5rem;
+        align-items: center;
+    }
+
+    h1 {
+        font-size: 4rem;
+        color: white;
+        text-shadow: 
+            4px 4px 0px #000000,
+            8px 8px 0px #333333,
+            12px 12px 0px #666666;
+    }
+
+    img {
+        width: 25rem;
+    }
+}
