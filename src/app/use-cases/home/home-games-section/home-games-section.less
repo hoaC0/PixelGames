@@ -4,21 +4,20 @@
         height: 100vh;
         background-color: rgb(0, 0, 0);
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 15% 35% 15% 35%;
+        grid-template-columns: 1fr;
+        grid-template-rows: 15% 35% 15% 35%; /* Title, Games, Title, Sales */
     }
 
-        .explore {
+    /* EXPLORE GAMES TITLE STYLING */
+    .explore {
         margin: 4rem 0rem;
         color: white;
-        grid-column: span 2;
-        grid-row: 1;
+        grid-row: 1; /* First row - top title */
         text-align: center;
         text-shadow: 
             0px 0px 10px #9306d4,
             0px 0px 20px #9306d4,
             0px 0px 30px #9306d4,
-
             2px 2px 0px #531a61,
             4px 4px 0px #9306d4,
             6px 6px 0px #ca86c7;
@@ -26,17 +25,16 @@
         animation: glow 2s ease-in-out infinite alternate;
     }
 
+    /* SALES TITLE STYLING */
     .sale {
         margin: 4rem 0rem;
         color: white;
-        grid-column: span 2;
-        grid-row: 3;
+        grid-row: 3; /* Third row - middle title */
         text-align: center;
         text-shadow: 
             0px 0px 10px #9306d4,
             0px 0px 20px #9306d4,
             0px 0px 30px #9306d4,
-
             2px 2px 0px #531a61,
             4px 4px 0px #9306d4,
             6px 6px 0px #ca86c7;
@@ -44,6 +42,7 @@
         animation: glow 2s ease-in-out infinite alternate;
     }
 
+    /* GLOWING ANIMATION FOR TITLES */
     @keyframes glow {
         from {
             text-shadow: 
@@ -66,14 +65,117 @@
     }
 
     .explore-games {
-        grid-column: span 2;
         grid-row: 2;
         background-color: rgb(20, 20, 20);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 20px;
     }
 
+    .featured-game {
+        display: flex;
+        border-radius: 8px;
+        overflow: hidden;
+        width: 80vw;
+        height: 75%;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .game-image {
+        flex: 2;
+        background: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #8dc8a0; /* CHANGE: Text color for placeholder */
+        font-size: 18px; /* CHANGE: Placeholder text size */
+    }
+
+    .game-details {
+        flex: 1; /* CHANGE: Takes 1/3 of the card width */
+        padding: 20px; /* CHANGE: Inner spacing */
+        background: #ca86c7; /* CHANGE: Right side background color */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; /* Spreads content evenly */
+    }
+
+    /* GAME TITLE STYLING */
+    .game-title {
+        color: white; /* CHANGE: Title text color */
+        font-size: 24px; /* CHANGE: Title size */
+        font-weight: bold;
+        margin-bottom: 10px; /* CHANGE: Space below title */
+    }
+
+    .game-description {
+        color: #c6d4df;
+        font-size: 14px;
+        margin-bottom: 15px;
+        line-height: 1.4;
+    }
+
+    .recommended {
+        color: #66c0f4;
+        font-weight: bold;
+    }
+
+    .game-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 20px;
+    }
+
+    .tag {
+        background: #4c6b22;
+        color: #beee11;
+        padding: 4px 8px;
+        font-size: 12px;
+        border-radius: 3px;
+    }
+
+    .game-price {
+        color: rgb(255, 255, 255);
+        font-size: 25px;
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .nav-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0,0,0,0.7);
+        border: none;
+        color: white;
+        width: 6rem;
+        height: 6rem;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        transition: all 0.3s ease;
+        z-index: 10;
+
+        &:hover {
+            background: rgba(0,0,0,0.9);
+            transform: translateY(-50%) scale(1.1);
+        }
+    }
+
+    .nav-left {
+        left: 30px;
+    }
+
+    .nav-right {
+        right: 30px;
+    }
+
+
     .sale-games {
-        grid-column: span 2;
-        grid-row: 4;
+        grid-row: 4; 
         background-color: rgb(20, 20, 20);
     }
 }
