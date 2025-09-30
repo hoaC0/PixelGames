@@ -1,6 +1,10 @@
 export type Game = {
-    id: number;
+    id: string;
     title: string;
-    rating?: number;
-    price: string;
+    steamRatingText?: string;
+    steamRatingPercent?: number;
+    normalPrice: string;
+    dealRating?: string;
+    external?: string;
+    thumb?: string;
 }
