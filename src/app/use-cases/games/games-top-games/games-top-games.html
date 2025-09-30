@@ -1,0 +1,9 @@
+<div>
+    @for ( game of store.games();  track game.id ) {
+        <img [src]="game.thumb" alt="">
+        <h3>{{ game.title }}</h3>
+        <h1>{{ game.external }}</h1>
+        <p>Steam Rating: {{ game.steamRatingText }}</p>
+        <p>Price: €{{ game.normalPrice }}</p>
+    }
+</div>
