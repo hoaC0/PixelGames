@@ -1,4 +1,4 @@
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy, computed, linkedSignal } from '@angular/core';
 
 @Component({
   selector: 'app-practice-signals',
@@ -9,7 +9,7 @@ import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 export class PracticeSignalsComponent {
 
   // can only be "online" or "offline"
-  userstatus = signal<"online" | "offline">("offline");
+  userstatus = signal<"online" | "offline" | "away">("offline");
 
   toggleOn() {
     this.userstatus.set("online");
@@ -29,5 +29,20 @@ export class PracticeSignalsComponent {
       this.toggleOn();
     }
   }
+
+  notificationEnabled = computed(() => this.userstatus() === "online");
+
+  statusMessage = linkedSignal(() => {
+    debugger;
+    const status = this.userstatus();
+    console.log(status);
+    
+    switch (status) {
+      case "online": return "Available for meetings and messages";
+      case "offline": return "Inactive";
+      case "away": return "Temporarily away, check back later";
+      default: return "Status unknown";
+    }
+  });
 
 }
