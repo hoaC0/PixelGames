@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { GameStore } from '../../../store/games.store';
 
 @Component({
   selector: 'app-games-main-section',
@@ -6,6 +7,12 @@ import { Component } from '@angular/core';
   templateUrl: './games-main-section.component.html',
   styleUrl: './games-main-section.component.less'
 })
-export class GamesMainSectionComponent {
+export class GamesMainSectionComponent implements OnInit {
+  
+  store = inject(GameStore);
+  
+  ngOnInit() {
+    this.store.loadAllGames();
+  }
 
 }

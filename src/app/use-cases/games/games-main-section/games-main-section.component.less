@@ -1,0 +1,44 @@
+:host {
+
+    .main-container {
+        width: 100vw;
+        height: 100vh;
+        display: grid;
+        background-color: #333333;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 7.5vh 12.5vh 80vh;
+    }
+    
+    .top-sale {
+        display: flex;
+        grid-column: span 3;
+        grid-row: 2;
+        margin: 0;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        text-shadow: 
+            4px 4px 0px #000000,
+            8px 8px 0px #333333,
+            12px 12px 0px #666666;
+    }
+
+    .top-sale-games-container {
+        display: grid;
+        grid-column: span 3;
+        grid-row: 3;
+        justify-content: center;
+
+    }
+
+    .top-sale-games {
+        display: grid;
+        border: 5px solid white;
+        width: 75vw;
+        height: 30vh;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: 1fr;
+    }
+
+}
