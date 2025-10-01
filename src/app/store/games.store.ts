@@ -19,7 +19,12 @@ const initialState: GameState = {
 
 //https://www.cheapshark.com/api/1.0/deals?steamRating=80&metacritic=75&pageSize=50
 
-const BASE_URL = 'https://www.cheapshark.com/api/1.0';
+// game URL
+const BASE_URL = 'https://api.rawg.io/api';
+const API_KEY = import.meta.env['NG_APP_RAWG_API_KEY'];
+
+// game deals URL
+const BASE_URL_DEALS = 'https://www.cheapshark.com/api/1.0';
 
 export const GameStore = signalStore(
   { providedIn: 'root' }, // globally accessible
@@ -27,7 +32,7 @@ export const GameStore = signalStore(
   withMethods(
     (store) => ({
         
-        // get all games
+        // get top games
         async loadAllGames() {
             patchState(store, { loading: true })
 
@@ -37,7 +42,7 @@ export const GameStore = signalStore(
             //     loading:false});
 
             try {
-                const response = await fetch(`${BASE_URL}/deals`)
+                const response = await fetch(`${BASE_URL}/games`);
                 const games = await response.json();
                 
                 console.log("Successfully loaded")
@@ -54,14 +59,14 @@ export const GameStore = signalStore(
             patchState(store, { loading: true })
             
             try {
-            const search = "batman"; // replace batman with form var
-            const repsone = await fetch(`${BASE_URL}/games?title=${search}`)
-            const games = await repsone.json();
+                const search = "batman"; // replace batman with form var
+                const repsone = await fetch(`${BASE_URL}/games?title=${search}`)
+                const games = await repsone.json();
 
-            console.log("Search successful");
-            patchState(store, {
-                games,
-                loading: false,
+                console.log("Search successful");
+                patchState(store, {
+                    games,
+                    loading: false,
             })
 
             } catch {
