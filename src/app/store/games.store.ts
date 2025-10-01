@@ -3,18 +3,22 @@ import { Game } from "../model/game-store.model";
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 
 const GAMES: Game[] = [
-    { id: "1", title: "Helldivers 2", steamRatingText: "Very positive", normalPrice: "39.99" }
+    { id: 1 , name: "Helldivers 2", slug: "helldivers-2" },
 ];
 
 type GameState = {
     games: Game[];
     loading: boolean;
+    currentPage: number;
+    gamesPerPage: number;
     // filter: 
 }
 
 const initialState: GameState = {
     games: [],
     loading: false,
+    currentPage: 0,
+    gamesPerPage: 3,
 }
 
 //https://www.cheapshark.com/api/1.0/deals?steamRating=80&metacritic=75&pageSize=50
@@ -27,31 +31,46 @@ const API_KEY = import.meta.env['NG_APP_RAWG_API_KEY'];
 const BASE_URL_DEALS = 'https://www.cheapshark.com/api/1.0';
 
 export const GameStore = signalStore(
-  { providedIn: 'root' }, // globally accessible
+  { providedIn: 'root' },
   withState(initialState),
   withMethods(
     (store) => ({
-        
-        // get top games
         async loadAllGames() {
             patchState(store, { loading: true })
-
-            // get mocks
-            // patchState(store, {
-            //     games: GAMES,
-            //     loading:false});
-
+            
             try {
-                const response = await fetch(`${BASE_URL}/games`);
-                const games = await response.json();
-                
-                console.log("Successfully loaded")
+                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&page_size=12`);
+                const data = await response.json();
+                const games = data.results;
+               
+                console.log("Successfully loaded", games);
                 patchState(store, {
-                games,
-                loading: false})
-            } catch {
-              console.error("Error while loading files");
+                    games,
+                    loading: false
+                })
+            } catch (error) {
+              console.error("Error loading games:", error);
               patchState(store, { loading: false })  
+            }
+        },
+        
+        nextPage() {
+            const maxPage = Math.ceil(store.games().length / store.gamesPerPage()) - 1;
+            if (store.currentPage() < maxPage) {
+                patchState(store, { currentPage: store.currentPage() + 1 });
+            }
+        },
+        
+        prevPage() {
+            if (store.currentPage() > 0) {
+                patchState(store, { currentPage: store.currentPage() - 1 });
+            }
+        },
+        
+        goToPage(page: number) {
+            const maxPage = Math.ceil(store.games().length / store.gamesPerPage()) - 1;
+            if (page >= 0 && page <= maxPage) {
+                patchState(store, { currentPage: page });
             }
         },
 

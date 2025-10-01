@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { GameStore } from '../../../store/games.store';
 
 @Component({
@@ -10,9 +10,13 @@ import { GameStore } from '../../../store/games.store';
 export class GamesMainSectionComponent implements OnInit {
   
   store = inject(GameStore);
+  Math = Math;
 
-  imageURL = "https://cdn.steamstatic.com/steam/apps/";
-  game_card = "capsule_616x353.jpg";
+  visibleGames = computed(() => {
+    const start = this.store.currentPage() * this.store.gamesPerPage();
+    const end = start + this.store.gamesPerPage();
+    return this.store.games().slice(start, end);
+  });
 
   ngOnInit() {
     this.store.loadAllGames();

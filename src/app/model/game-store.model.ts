@@ -1,11 +1,9 @@
 export type Game = {
-    id: string;
-    title: string;
-    steamRatingText?: string;
-    steamRatingPercent?: number;
-    steamAppID?: string;
-    normalPrice: string;
-    dealRating?: string;
-    external?: string;
-    thumb?: string;
+  id: number;
+  name: string;
+  slug: string;
+  background_image?: string;
+  rating?: number;
+  metacritic?: number;
+  released?: string;
 }
