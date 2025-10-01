@@ -1,6 +1,6 @@
 <div class="top-games-container">
     @for (game of store.games(); track game.id) {
-        <div class="game-card">
+        <div class="game-card" (click)="openInfo()">
             <img [src]="game.background_image" [alt]="game.name">
             <div class="game-info">
                 <h3>{{ game.name }}</h3>
@@ -13,3 +13,10 @@
         </div>
     }
 </div>
+
+@if (showInfo) {
+  <app-game-info (close)="closeInfo()">
+    <h1>Game Details</h1>
+    <p>Info goes here</p>
+  </app-game-info>
+}
