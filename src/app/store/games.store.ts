@@ -17,6 +17,8 @@ const initialState: GameState = {
     loading: false,
 }
 
+//https://www.cheapshark.com/api/1.0/deals?steamRating=80&metacritic=75&pageSize=50
+
 const BASE_URL = 'https://www.cheapshark.com/api/1.0';
 
 export const GameStore = signalStore(
@@ -37,7 +39,7 @@ export const GameStore = signalStore(
             try {
                 const response = await fetch(`${BASE_URL}/deals`)
                 const games = await response.json();
-
+                
                 console.log("Successfully loaded")
                 patchState(store, {
                 games,

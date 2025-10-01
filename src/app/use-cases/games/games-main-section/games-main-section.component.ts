@@ -10,7 +10,10 @@ import { GameStore } from '../../../store/games.store';
 export class GamesMainSectionComponent implements OnInit {
   
   store = inject(GameStore);
-  
+
+  imageURL = "https://cdn.steamstatic.com/steam/apps/";
+  game_card = "capsule_616x353.jpg";
+
   ngOnInit() {
     this.store.loadAllGames();
   }

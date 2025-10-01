@@ -3,6 +3,7 @@ export type Game = {
     title: string;
     steamRatingText?: string;
     steamRatingPercent?: number;
+    steamAppID?: string;
     normalPrice: string;
     dealRating?: string;
     external?: string;
