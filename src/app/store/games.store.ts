@@ -39,7 +39,7 @@ export const GameStore = signalStore(
             patchState(store, { loading: true })
             
             try {
-                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&page_size=12`);
+                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&page_size=100`);
                 const data = await response.json();
                 const games = data.results;
                

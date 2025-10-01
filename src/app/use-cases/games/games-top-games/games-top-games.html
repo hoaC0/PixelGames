@@ -1,10 +1,15 @@
-// TODO: fix
-<div>
-    @for ( game of store.games();  track game.id ) {
-        <img [src]="game.background_image" alt="">
-        <h3>{{ game.name }}</h3>
-        <h1>{{ game.metacritic }}</h1>
-        <p>Steam Rating: {{ game.rating }}</p>
-        <p>Price: €PRICE</p>
+<div class="top-games-container">
+    @for (game of store.games(); track game.id) {
+        <div class="game-card">
+            <img [src]="game.background_image" [alt]="game.name">
+            <div class="game-info">
+                <h3>{{ game.name }}</h3>
+                <p class="released">Released: {{ game.released }}</p>
+                <p class="rating">⭐ {{ game.rating }}/5</p>
+                @if (game.metacritic) {
+                    <p class="metacritic">Metacritic: {{ game.metacritic }}</p>
+                }
+            </div>
+        </div>
     }
 </div>
