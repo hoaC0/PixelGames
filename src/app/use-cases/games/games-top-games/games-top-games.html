@@ -1,22 +1,24 @@
 <div class="top-games-container">
-    @for (game of store.games(); track game.id) {
-        <div class="game-card" (click)="openInfo()">
-            <img [src]="game.background_image" [alt]="game.name">
-            <div class="game-info">
-                <h3>{{ game.name }}</h3>
-                <p class="released">Released: {{ game.released }}</p>
-                <p class="rating">⭐ {{ game.rating }}/5</p>
-                @if (game.metacritic) {
-                    <p class="metacritic">Metacritic: {{ game.metacritic }}</p>
-                }
-            </div>
-        </div>
-    }
+  @for (game of games(); track game.id) {
+  <div class="game-card" (click)="openInfo()">
+    <img [src]="game.background_image" [alt]="game.name" />
+    <div class="game-info">
+      <h3>{{ game.name }}</h3>
+      <p class="released">Released: {{ game.released }}</p>
+      <p class="rating">⭐ {{ game.rating }}/5</p>
+      @if (game.metacritic) {
+      <p class="metacritic">Metacritic: {{ game.metacritic }}</p>
+      }
+    </div>
+  </div>
+  }
 </div>
 
+<div>Games showcased: {{ store.gamesCount() }}</div>
+
 @if (showInfo) {
-  <app-game-info (close)="closeInfo()">
-    <h1>Game Details</h1>
-    <p>Info goes here</p>
-  </app-game-info>
+<app-game-info (close)="closeInfo()">
+  <h1>Game Details</h1>
+  <p>Info goes here</p>
+</app-game-info>
 }

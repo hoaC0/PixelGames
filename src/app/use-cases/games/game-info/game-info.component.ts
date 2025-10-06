@@ -8,8 +8,12 @@ import { Component, Output, EventEmitter } from '@angular/core';
   styleUrl: './game-info.component.less'
 })
 export class GameInfoComponent {
+
+  // parent component can listen
+  // emits void when triggered
   @Output() close = new EventEmitter<void>();
 
+  // event to notify the parent component
   onClose() {
     this.close.emit();
   }
