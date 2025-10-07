@@ -44,6 +44,7 @@ export const GameStore = signalStore(
   })),
   withMethods(
     (store) => ({
+        // initially
         async loadAllGames() {
             patchState(store, { loading: true })
             console.log("STORE.....", store.currentPagination() )
@@ -64,6 +65,9 @@ export const GameStore = signalStore(
             }
         },
         
+        //
+        // carousel
+        //
         nextPage() {
             const maxPage = Math.ceil(store.games().length / store.gamesPerPage()) - 1;
             if (store.currentPage() < maxPage) {
@@ -87,7 +91,6 @@ export const GameStore = signalStore(
         //
         // PAGINATION
         //
-
         async displayCurrentPaginationPage() {
             const currentPage = store.currentPagination();
             if (currentPage === 1 || currentPage === 2 || currentPage === 3) {
@@ -105,27 +108,27 @@ export const GameStore = signalStore(
                     ]
                 })
             }
+
+            try {
+                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&page=${store.currentPagination()}&page_size=40`);
+                const data = await response.json();
+                const games = data.results;
+                
+                console.log("Successfully loaded", games);
+                patchState(store, {
+                    games,
+                    loading: false
+                })
+            } catch (error) {
+                console.error("Error loading games:", error);
+                patchState(store, { loading: false })  
+            }
         },
 
         async nextPagination() {
             if ( store.currentPagination() > 0 ) { // replace 0 with max value
                 patchState(store, { loading: true, currentPagination: store.currentPagination() + 1, })
                 console.log("NEXT: ", store.currentPagination())
-
-                try {
-                    const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&page=${store.currentPagination()}&page_size=40`);
-                    const data = await response.json();
-                    const games = data.results;
-                
-                    console.log("Successfully loaded", games);
-                    patchState(store, {
-                        games,
-                        loading: false
-                    })
-                } catch (error) {
-                console.error("Error loading games:", error);
-                patchState(store, { loading: false })  
-                }
             } else {
                 console.log("max already")
                 // CONDITION
@@ -134,26 +137,9 @@ export const GameStore = signalStore(
             this.displayCurrentPaginationPage();
         },
 
-        // 
         async prevPagination() {
             if ( store.currentPagination() > 1 ) {
                 patchState(store, { loading: true, currentPagination: store.currentPagination() - 1 })
-                console.log("PREV: ", store.currentPagination())
-
-                try {
-                    const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&page=${store.currentPagination()}&page_size=40`);
-                    const data = await response.json();
-                    const games = data.results;
-                
-                    console.log("Successfully loaded", games);
-                    patchState(store, {
-                        games,
-                        loading: false
-                    })
-                } catch (error) {
-                console.error("Error loading games:", error);
-                patchState(store, { loading: false })  
-                }
             } else {
                 console.log("min already")
                 // CONDITION
@@ -162,35 +148,12 @@ export const GameStore = signalStore(
             this.displayCurrentPaginationPage()
         },
 
-        // TODO: ARRAY(5) erstellen mit + und -
-        async goToPagination() {
-            try {
-
-            } catch {
-
-            }
+        async goToPagination(page: number) {
+            console.log("PAGE2: ", page)
+            const currentPage = page;
+            patchState(store, { loading: true, currentPagination: currentPage });
+            this.displayCurrentPaginationPage()
         },
-
-        async searchGames(searchTerm: string) {
-            patchState(store, { loading: true })
-            
-            try {
-                const search = searchTerm;
-                const responese = await fetch(`${BASE_URL}/games?title=${search}`)
-                const games = await responese.json();
-
-                console.log("Search successful");
-                patchState(store, {
-                    games,
-                    loading: false,
-            })
-
-            } catch {
-                console.error("Error while loading search");
-                patchState(store, { loading: false })
-            }
-        },
-
 
         loadGame() {
 

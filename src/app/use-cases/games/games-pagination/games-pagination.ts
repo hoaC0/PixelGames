@@ -23,7 +23,8 @@ export class GamesPagination {
     this.store.prevPagination();
   }
 
-  currentPagination() {
-    
+  currentPagination(page: number) {
+    this.store.goToPagination(page);
+    // console.log("PAGE ", page )
   }
 }

@@ -3,7 +3,7 @@
         <
     </button>
     @for (item of this.store.currentPaginationPages(); track item) {
-    <button class="pagination-page">{{ item  }}</button>
+    <button class="pagination-page" (click)="currentPagination(item)">{{ item  }}</button>
     }
     <button class="pagination-arrow" (click)="nextPage()">
         >
