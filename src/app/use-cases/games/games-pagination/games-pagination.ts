@@ -25,6 +25,5 @@ export class GamesPagination {
 
   currentPagination(page: number) {
     this.store.goToPagination(page);
-    // console.log("PAGE ", page )
   }
 }

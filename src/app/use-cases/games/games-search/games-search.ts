@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import { GameStore } from '../store/games.store';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 
 @Component({
@@ -11,14 +12,20 @@ import { GameStore } from '../store/games.store';
   templateUrl: './games-search.html',
   styleUrl: './games-search.less'
 })
-export class GamesSearch implements OnInit {
-
-  store = inject(GameStore);
-
-  searchTerm = new FormControl<string>('');
-
-  ngOnInit() {
-    console.log(this.searchTerm.value)
-    // this.store.searchGames(this.searchTerm);
-  }
+export class GamesSearch {
+    gameStore = inject(GameStore);
+    searchTerm = new FormControl('');
+    
+    ngOnInit() {
+        this.searchTerm.valueChanges.pipe(
+            debounceTime(300),
+            distinctUntilChanged()
+        ).subscribe(term => {
+            if (term) {
+                this.gameStore.searchGames(term);
+            } else {
+                this.gameStore.loadAllGames();
+            }
+        });
+    }
 }

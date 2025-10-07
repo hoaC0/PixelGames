@@ -2,6 +2,7 @@ import { computed, inject } from "@angular/core";
 import { Game } from "../../../model/game-store.model";
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 
+// TODO: replace fetch with http client
 const GAMES: Game[] = [
     { id: 1 , name: "Helldivers 2", slug: "helldivers-2" },
 ];
@@ -11,6 +12,7 @@ type GameState = {
     loading: boolean;
     currentPage: number;
     gamesPerPage: number;
+    search: string;
     currentPagination: number;
     currentPaginationPages: number[];
     // filter: 
@@ -21,6 +23,7 @@ const initialState: GameState = {
     loading: false,
     currentPage: 0,
     gamesPerPage: 3,
+    search: "",
     currentPagination: 1,
     currentPaginationPages: [1, 2, 3, 4, 5]
 }
@@ -39,9 +42,6 @@ const BASE_URL_DEALS = 'https://www.cheapshark.com/api/1.0';
 export const GameStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({games}) => ({
-     gamesCount: computed(() => games().length)
-  })),
   withMethods(
     (store) => ({
         // initially
@@ -50,7 +50,7 @@ export const GameStore = signalStore(
             console.log("STORE.....", store.currentPagination() )
             
             try {
-                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&page=${store.currentPagination()}&page_size=40`);
+                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&search=&page=${store.currentPagination()}&page_size=40`);
                 const data = await response.json();
                 const games = data.results;
                
@@ -88,6 +88,20 @@ export const GameStore = signalStore(
             }
         },
 
+        // 
+        // SEARCH
+        // 
+        async searchGames(searchTerm: string) {
+            patchState(store, { loading: true });
+            try {
+                patchState(store, { loading: false, search: searchTerm });
+                this.displayCurrentPaginationPage();
+                console.log("Search:", searchTerm)
+            } catch {
+                console.error("Error");
+            }
+        },
+
         //
         // PAGINATION
         //
@@ -110,7 +124,7 @@ export const GameStore = signalStore(
             }
 
             try {
-                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&page=${store.currentPagination()}&page_size=40`);
+                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&search=${store.search()}&page=${store.currentPagination()}&page_size=40`);
                 const data = await response.json();
                 const games = data.results;
                 
@@ -149,7 +163,6 @@ export const GameStore = signalStore(
         },
 
         async goToPagination(page: number) {
-            console.log("PAGE2: ", page)
             const currentPage = page;
             patchState(store, { loading: true, currentPagination: currentPage });
             this.displayCurrentPaginationPage()
