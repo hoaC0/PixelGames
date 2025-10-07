@@ -1,46 +1,43 @@
 <div class="main-container">
-  <div class="top-sale"><h1>Browse the top Games...</h1></div>
-  <div class="top-sale-games-container">
-    @if (store.loading()) {
-    <p>Loading...</p>
-    } @else if (visibleGames().length > 0) {
-    <div class="top-sale-games" [class.animate-in]="nextPageClicked()">
-      <div class="button">
-        <button class="nav-arrow" (click)="store.prevPage()" [disabled]="store.currentPage() === 0">
-          <i class="fa-solid fa-chevron-left"></i>
-        </button>
-      </div>
+    <div class="top-sale"><h1>Browse the top Games...</h1></div>
+    <div class="top-sale-games-container">
+        @if (store.loading()) {
+            <p>Loading...</p>
+        } @else if (visibleGames().length > 0) {
+            <div class="top-sale-games">
 
-      @for (game of visibleGames(); track game.id) {
-      <div class="game">
-        <div class="game-image">
-          <img [src]="game.background_image" [alt]="game.name" class="game-image" />
-        </div>
-        <div class="game-title">
-          <h1>{{ game.name }}</h1>
-        </div>
-        <div class="game-price">
-          <p>Rating: {{ game.rating }}</p>
-        </div>
-      </div>
-      }
-
-      <div class="button">
-        <button
-          class="nav-arrow"
-          (click)="nextPage()"
-          [disabled]="
-            store.currentPage() === Math.ceil(store.games().length / store.gamesPerPage()) - 1
-          "
-        >
-          <i class="fa-solid fa-chevron-right"></i>
-        </button>
-      </div>
+                <div class="button">
+                    <button 
+                        class="nav-arrow" 
+                        (click)="store.prevPage()"
+                        [disabled]="store.currentPage() === 0">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                </div>
+                
+                @for (game of visibleGames(); track game.id) {
+                    <div class="game">
+                        <div class="game-image">
+                            <img [src]="game.background_image" [alt]="game.name" class="game-image">
+                        </div>
+                        <div class="game-title"><h1>{{ game.name }}</h1></div>
+                        <div class="game-price"><p>Rating: {{ game.rating }}</p></div>
+                    </div>
+                }
+                
+                <div class="button">
+                    <button 
+                        class="nav-arrow" 
+                        (click)="store.nextPage()"
+                        [disabled]="store.currentPage() === Math.ceil(store.games().length / store.gamesPerPage()) - 1">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="page-indicator">
+                {{ store.currentPage() + 1 }} / {{ Math.ceil(store.games().length / store.gamesPerPage()) }}
+            </div>
+        }
     </div>
-
-    <div class="page-indicator">
-      {{ store.currentPage() + 1 }} / {{ Math.ceil(store.games().length / store.gamesPerPage()) }}
-    </div>
-    }
-  </div>
 </div>

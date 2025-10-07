@@ -1,0 +1,11 @@
+<div class="pagination">
+    <button class="pagination-arrow">
+        <
+    </button>
+    @for (item of [].constructor(5); track $index) {
+    <button class="pagination-page">{{ $index + 1 }}</button>
+    }
+    <button class="pagination-arrow">
+        >
+    </button>
+</div>
