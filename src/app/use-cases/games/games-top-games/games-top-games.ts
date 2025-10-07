@@ -2,11 +2,12 @@ import { Component, inject, OnInit } from '@angular/core';
 import { GameStore } from '../store/games.store';
 import { GameInfoComponent } from '../game-info/game-info.component';
 import { GamesPagination } from "../games-pagination/games-pagination";
+import { GamesSearch } from "../games-search/games-search";
 
 
 @Component({
   selector: 'app-games-top-games',
-  imports: [GameInfoComponent, GamesPagination],
+  imports: [GameInfoComponent, GamesPagination, GamesSearch],
   templateUrl: './games-top-games.html',
   styleUrl: './games-top-games.less'
 })

@@ -1,11 +1,11 @@
 <div class="pagination">
-    <button class="pagination-arrow">
+    <button class="pagination-arrow" (click)="prevPage()">
         <
     </button>
-    @for (item of [].constructor(5); track $index) {
-    <button class="pagination-page">{{ $index + 1 }}</button>
+    @for (item of this.store.currentPaginationPages(); track item) {
+    <button class="pagination-page">{{ item  }}</button>
     }
-    <button class="pagination-arrow">
+    <button class="pagination-arrow" (click)="nextPage()">
         >
     </button>
 </div>
