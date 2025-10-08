@@ -1,5 +1,12 @@
 <div class="overlay" (click)="onClose()">
   <div class="info" (click)="$event.stopPropagation()">
-    <div>dwadwadawdad</div>
+    <div class="button"><button (click)="onClose()"><ng-icon name="lucideX" class="X"/></button></div>
+    <div class="images"><img src="assets/helldivers-2.webp" alt="Game Image" class="media"></div>
+    <div class="about">
+      <div class="title">Game Title</div>
+      <div class="description">Game Description - Lorem ipsum dolor sit, amet consectetur adipisicing elit. Debitis, explicabo harum ipsa cumque culpa unde dicta corporis reiciendis id vel ea. Quasi quam nesciunt quidem voluptatem quia, odit voluptatibus nobis.</div>
+      <div class="reviews">Reviews</div>
+    </div>
+
   </div>
 </div>

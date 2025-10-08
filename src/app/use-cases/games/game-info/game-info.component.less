@@ -8,14 +8,82 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: rgba(0, 0, 0, 0.621);
 }
 
+// INFO
 .info {
-  width: 800px;
-  height: 600px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows:  5% 1fr 1fr;
+  gap: 12px;
+  width: 60vw;
+  height: 75vh;
+  padding: 2.5rem;
+  border-radius: 22px;
+  color: white;
+  background-color: #1a1a1a;
 }
 
-div {
-  color: white;
-  background-color: rgba(0, 0, 0, 0.518);
+
+// BUTTON
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  grid-column: span 2;
+  grid-row: 1;
 }
+
+button {
+  background-color: transparent;
+  border: 0;
+}
+
+.X {
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.X:hover {
+  transform:scale(1.2);
+}
+
+.images {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.about {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 7.5% 23.5% 70%;
+  grid-column: 2;
+  grid-row: span 2;
+  overflow-y: auto;
+}
+
+.title {
+  display: flex;
+  padding: 5px;
+  justify-content: start;
+  align-items: center;
+  font-size: 2rem;
+}
+
+.description {
+  display: flex;
+  padding: 5px;
+}
+
+
+
+

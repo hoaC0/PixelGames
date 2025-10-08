@@ -1,9 +1,17 @@
 import { Component, Output, EventEmitter } from '@angular/core';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideX } from '@ng-icons/lucide';
+
 
 @Component({
   selector: 'app-game-info',
   standalone: true,
-  imports: [],
+  imports: [
+    NgIconComponent
+  ],
+  providers: [
+    provideIcons({ lucideX })
+  ],
   templateUrl: './game-info.component.html',
   styleUrl: './game-info.component.less'
 })

@@ -35,7 +35,8 @@ const BASE_URL = 'https://api.rawg.io/api';
 const API_KEY = import.meta.env['NG_APP_RAWG_API_KEY'];
 
 // game deals URL
-const BASE_URL_DEALS = 'https://www.cheapshark.com/api/1.0';
+const CHEAPSHARK_URL_BASE = 'https://www.cheapshark.com/api/1.0';
+const CHEAPSHAR_URL_DEALS = "https://www.cheapshark.com/redirect?dealID={dealID}"
 
 
 
@@ -50,7 +51,7 @@ export const GameStore = signalStore(
             console.log("STORE.....", store.currentPagination() )
             
             try {
-                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&search=&page=${store.currentPagination()}&page_size=40`);
+                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&metacritic=1,100&search=&page=${store.currentPagination()}&page_size=40`);
                 const data = await response.json();
                 const games = data.results;
                
@@ -94,7 +95,7 @@ export const GameStore = signalStore(
         async searchGames(searchTerm: string) {
             patchState(store, { loading: true });
             try {
-                patchState(store, { loading: false, search: searchTerm });
+                patchState(store, { loading: false, search: searchTerm + "&search_exact=true"}); // TODO: optimise search
                 this.displayCurrentPaginationPage();
                 console.log("Search:", searchTerm)
             } catch {
@@ -124,7 +125,7 @@ export const GameStore = signalStore(
             }
 
             try {
-                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&search=${store.search()}&page=${store.currentPagination()}&page_size=40`);
+                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&search=${store.search()}&search_exact&page=${store.currentPagination()}&page_size=40`); // TODO: &metacritic=1,100 
                 const data = await response.json();
                 const games = data.results;
                 
@@ -168,8 +169,8 @@ export const GameStore = signalStore(
             this.displayCurrentPaginationPage()
         },
 
-        loadGame() {
-
+        loadGameInfo(game: Game) {
+            console.log(game);
         }
 
     }))

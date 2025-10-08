@@ -3,6 +3,7 @@ import { GameStore } from '../store/games.store';
 import { GameInfoComponent } from '../game-info/game-info.component';
 import { GamesPagination } from "../games-pagination/games-pagination";
 import { GamesSearch } from "../games-search/games-search";
+import { Game } from '../../../model/game-store.model';
 
 
 @Component({
@@ -22,8 +23,11 @@ export class GamesTopGames implements OnInit {
     this.store.loadAllGames();
   }
 
-  openInfo() {
+
+
+  openInfo(game: Game) {
     this.showInfo = true;
+    this.store.loadGameInfo(game);
   }
 
   closeInfo() {

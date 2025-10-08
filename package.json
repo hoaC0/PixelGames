@@ -33,6 +33,8 @@
     "@fortawesome/free-brands-svg-icons": "^7.0.1",
     "@fortawesome/free-regular-svg-icons": "^7.0.1",
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
+    "@ng-icons/core": "^32.1.0",
+    "@ng-icons/lucide": "^32.1.0",
     "@ngrx/signals": "^20.0.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

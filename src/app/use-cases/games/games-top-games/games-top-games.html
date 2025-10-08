@@ -2,7 +2,7 @@
 
 <div class="top-games-container">
   @for (game of games(); track game.id) {
-  <div class="game-card" (click)="openInfo()">
+  <div class="game-card" (click)="openInfo(game)">
     <img [src]="game.background_image" [alt]="game.name" />
     <div class="game-info">
       <h3>{{ game.name }}</h3>
@@ -15,8 +15,6 @@
   </div>
   }
 </div>
-
-<!-- <div>Games showcased: {{ store.gamesCount() }}</div> -->
 
 @if (showInfo) {
 <app-game-info (close)="closeInfo()"></app-game-info>
