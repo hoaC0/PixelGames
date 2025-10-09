@@ -1,6 +1,7 @@
 import { computed, inject } from "@angular/core";
 import { Game } from "../../../model/game-store.model";
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
+import { GameDeals } from "../../../model/game-store-deals.model";
 
 // TODO: replace fetch with http client
 const GAMES: Game[] = [
@@ -11,6 +12,7 @@ type GameState = {
     games: Game[];
     gameInfo: Game | null;
     gameDescription: string;
+    gameDeals: GameDeals | null;
     loading: boolean;
     currentPage: number;
     gamesPerPage: number;
@@ -24,6 +26,7 @@ const initialState: GameState = {
     games: [],
     gameInfo: null,
     gameDescription: "",
+    gameDeals: null,
     loading: false,
     currentPage: 0,
     gamesPerPage: 3,
@@ -204,7 +207,12 @@ export const GameStore = signalStore(
         // TODO: Add a "filter", to filter out () since they cannot be in URLS
         // and also to remove content in () mostly the year
         async checkForDeals(game: string) {
-            const gameDeals = game.replace(/ /g, "%20").replace(/:/g, "").replace(/ä/g, "").replace(/ö/g, "").replace(/ü/g, "");
+            const gameDeals = game
+                .replace(/ /g, "%20")
+                .replace(/:/g, "")
+                .replace(/ä/g, "")
+                .replace(/ö/g, "")
+                .replace(/ü/g, "");
             console.log("Game Name with REPLACE: ", gameDeals);
             patchState(store, { loading: true })
             try {
