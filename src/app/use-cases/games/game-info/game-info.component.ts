@@ -1,6 +1,8 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { lucideX } from '@ng-icons/lucide';
+import { GameStore } from '../store/games.store';
+import { Game } from '../../../model/game-store.model';
 
 
 @Component({
@@ -15,7 +17,15 @@ import { lucideX } from '@ng-icons/lucide';
   templateUrl: './game-info.component.html',
   styleUrl: './game-info.component.less'
 })
-export class GameInfoComponent {
+export class GameInfoComponent implements OnInit{
+  
+  store =  inject(GameStore);
+  gameInfo = this.store.gameInfo;
+  gameDescription = this.store.gameDescription;
+
+  ngOnInit() {
+    console.log(this.gameInfo()?.id)
+  }
 
   // parent component can listen
   // emits void when triggered
@@ -24,5 +34,6 @@ export class GameInfoComponent {
   // event to notify the parent component
   onClose() {
     this.close.emit();
+    this.store.unloadDescription();
   }
 }

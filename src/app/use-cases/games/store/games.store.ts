@@ -9,6 +9,8 @@ const GAMES: Game[] = [
 
 type GameState = {
     games: Game[];
+    gameInfo: Game | null;
+    gameDescription: string;
     loading: boolean;
     currentPage: number;
     gamesPerPage: number;
@@ -20,6 +22,8 @@ type GameState = {
 
 const initialState: GameState = {
     games: [],
+    gameInfo: null,
+    gameDescription: "",
     loading: false,
     currentPage: 0,
     gamesPerPage: 3,
@@ -36,7 +40,7 @@ const API_KEY = import.meta.env['NG_APP_RAWG_API_KEY'];
 
 // game deals URL
 const CHEAPSHARK_URL_BASE = 'https://www.cheapshark.com/api/1.0';
-const CHEAPSHAR_URL_DEALS = "https://www.cheapshark.com/redirect?dealID={dealID}"
+const CHEAPSHAR_URL_DEALS = "https://www.cheapshark.com/redirect?dealID="
 
 
 
@@ -169,9 +173,59 @@ export const GameStore = signalStore(
             this.displayCurrentPaginationPage()
         },
 
-        loadGameInfo(game: Game) {
-            console.log(game);
-        }
+        // 
+        //  GameInfo
+        // 
+        async getDescription(gameID: number) {
+            patchState( store, { loading: true })
+            try {
+                const response = await fetch(`${BASE_URL}/games/${gameID}?key=b160d72957cf445c89d4bd750faeba94`); // TODO: &metacritic=1,100 
+                const data = await response.json();
+                const games = data;
+                patchState(store, { loading: false, gameDescription: games.description_raw })
+            } catch {
+                console.error("Error loading description")
+            }
+        },
+        unloadDescription() {
+            patchState(store, { loading: false, gameDescription: "" })
+        },
 
+        loadGameInfo(game: Game) {
+            try {
+                this.getDescription(game.id);
+                this.checkForDeals(game.name);
+                patchState(store, {loading: false, gameInfo: game})
+            } catch {
+                console.log("ERROR")
+            }
+        },
+
+        // TODO: Add a "filter", to filter out () since they cannot be in URLS
+        // and also to remove content in () mostly the year
+        async checkForDeals(game: string) {
+            const gameDeals = game.replace(/ /g, "%20").replace(/:/g, "").replace(/ä/g, "").replace(/ö/g, "").replace(/ü/g, "");
+            console.log("Game Name with REPLACE: ", gameDeals);
+            patchState(store, { loading: true })
+            try {
+                const response = await fetch(`${CHEAPSHARK_URL_BASE}/games?title=${gameDeals}&exact=1`)
+                const data = await response.json();
+                const gameCheap = data[0];
+                const deals = await fetch(`${CHEAPSHARK_URL_BASE}/games?id=${gameCheap.gameID}`);
+                // console.log("LINK ", deals.url);
+                const dealsData = await deals.json();
+                const dealsList = dealsData;
+                // console.log(dealsList) // TODO: maybe info to conncect to steamID
+                console.log("Cheapest Price ever: ", dealsList.cheapestPriceEver);
+                console.log("Deals: ", dealsList.deals)
+            } catch {
+                patchState(store, { loading: false })
+                console.error("ERROR loading deals");
+            }
+        },
+
+        async getReviews() {
+
+        }
     }))
 );

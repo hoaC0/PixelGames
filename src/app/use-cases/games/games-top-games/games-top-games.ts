@@ -23,8 +23,6 @@ export class GamesTopGames implements OnInit {
     this.store.loadAllGames();
   }
 
-
-
   openInfo(game: Game) {
     this.showInfo = true;
     this.store.loadGameInfo(game);

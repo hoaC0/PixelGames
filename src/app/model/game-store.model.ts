@@ -3,7 +3,7 @@ export type Game = {
   name: string;
   slug: string;
   background_image?: string;
-  description?: string;
+  description_raw?: string;
   short_screenshots?: { id: number; image: string }[];
   rating?: number;
   metacritic?: number;
