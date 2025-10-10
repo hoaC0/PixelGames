@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { GameStore } from '../store/games.store';
 
 @Component({
   selector: 'app-game-reviews',
@@ -7,5 +8,10 @@ import { Component } from '@angular/core';
   styleUrl: './game-reviews.less'
 })
 export class GameReviews {
+  store = inject(GameStore);
+  reviews = this.store.gameReviews;
   
+  constructor() {
+    console.log(this.reviews()!.results[0]);
+  }
 }

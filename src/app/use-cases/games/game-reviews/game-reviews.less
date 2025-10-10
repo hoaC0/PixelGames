@@ -1,6 +1,60 @@
 .reviews {
+    font-size: 1.5rem;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.review-title {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
 }
+
+.review {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 0.5rem 1rem;
+    background-color: #1a1a1a;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+}
+
+.image-container {
+    grid-row: 1 / 4;
+    grid-column: 1;
+}
+
+.image {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #333;
+}
+
+.username {
+    grid-column: 2;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.text {
+    grid-column: 2;
+    color: #ccc;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.rating {
+    grid-column: 2;
+    color: #ffd700;
+    font-weight: bold;
+}
+

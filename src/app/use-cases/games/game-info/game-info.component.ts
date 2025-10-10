@@ -29,7 +29,7 @@ export class GameInfoComponent implements OnInit{
   gameDescription = this.store.gameDescription;
 
   ngOnInit() {
-    console.log("STOR ", this.gameInfo())
+  
   }
 
   // parent component can listen

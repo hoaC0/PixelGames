@@ -4,6 +4,7 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 import { GameDeals } from "../../../model/game-store-deals.model";
 import { GameStores } from "../../../model/game-store-stores.model";
 import { GamesService } from "../games.service";
+import { Reviews } from "../../../model/game-store-reviews.model";
 
 // TODO: replace fetch with http client
 type GameState = {
@@ -12,6 +13,7 @@ type GameState = {
     gameDescription: string;
     gameDeals: GameDeals[] | null;
     gameStores: GameStores[] | null;
+    gameReviews: Reviews | null;
     storeLogos: string[];
     openInfo: boolean;
     loading: boolean;
@@ -30,6 +32,7 @@ const initialState: GameState = {
     gameDescription: "",
     gameDeals: null,
     gameStores: null,
+    gameReviews: null,
     storeLogos: [],
     openInfo: false,
     loading: false,
@@ -201,7 +204,7 @@ export const GameStore = signalStore(
             try {
                 const reviews = await gameService.getReviews(gameID);
                 console.log("Reviews", reviews);
-                patchState(store, { loading: false });
+                patchState(store, { loading: false, gameReviews: reviews });
             } catch {
                 patchState(store, { loading: false });
             }

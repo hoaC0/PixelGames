@@ -1,6 +1,20 @@
 <div class="reviews">
     <div class="review-title">Reviews</div>
-    <div class="review">
-        
-    </div>
+    @if ( reviews() ) {
+        @for ( review of reviews()!.results; track review ) {
+        <div class="review">
+            <div class="image-container">
+                @if (review.user.avatar) {
+                    <img [src]="review.user.avatar" alt="" class="image">
+                } @else {
+                    <img src="assets/anonymous.jpg" alt="" class="image">
+                }
+            </div>
+            <div class="username">{{ review.user.username }}</div>
+            <!-- <div class="date">{{ review.created }}</div> -->
+            <div class="text">{{review.text}}</div>
+            <div class="rating"> {{ review.rating }}/5</div>
+        </div>
+        }
+    }
 </div>
