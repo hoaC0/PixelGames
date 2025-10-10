@@ -15,20 +15,21 @@ import { Game } from '../../../model/game-store.model';
 export class GamesTopGames implements OnInit {
   
   store = inject(GameStore);
-  games = this.store.games
-  loading = this.store.loading
-  showInfo = false;
+  games = this.store.games;
+  loading = this.store.loading;
+  openGameInfo = this.store.openInfo;
+
+  showInfo = this.openGameInfo;
 
   ngOnInit() {
     this.store.loadAllGames();
   }
 
   openInfo(game: Game) {
-    this.showInfo = true;
     this.store.loadGameInfo(game);
   }
 
   closeInfo() {
-    this.showInfo = false;
+    this.store.closeInfo();
   }
 }

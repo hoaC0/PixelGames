@@ -1,4 +1,5 @@
 <app-games-search></app-games-search>
+<!-- TODO: add filter -->
 
 <div class="top-games-container">
   @for (game of games(); track game.id) {
@@ -16,7 +17,7 @@
   }
 </div>
 
-@if (showInfo) {
+@if (showInfo()) {
 <app-game-info (close)="closeInfo()"></app-game-info>
 }
 

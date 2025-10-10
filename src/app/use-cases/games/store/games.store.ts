@@ -2,6 +2,7 @@ import { computed, inject } from "@angular/core";
 import { Game } from "../../../model/game-store.model";
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { GameDeals } from "../../../model/game-store-deals.model";
+import { GameStores } from "../../../model/game-store-stores.model";
 
 // TODO: replace fetch with http client
 const GAMES: Game[] = [
@@ -12,7 +13,10 @@ type GameState = {
     games: Game[];
     gameInfo: Game | null;
     gameDescription: string;
-    gameDeals: GameDeals | null;
+    gameDeals: GameDeals[] | null;
+    gameStores: GameStores[] | null;
+    storeLogos: string[];
+    openInfo: boolean;
     loading: boolean;
     currentPage: number;
     gamesPerPage: number;
@@ -27,6 +31,9 @@ const initialState: GameState = {
     gameInfo: null,
     gameDescription: "",
     gameDeals: null,
+    gameStores: null,
+    storeLogos: [],
+    openInfo: false,
     loading: false,
     currentPage: 0,
     gamesPerPage: 3,
@@ -55,14 +62,12 @@ export const GameStore = signalStore(
         // initially
         async loadAllGames() {
             patchState(store, { loading: true })
-            console.log("STORE.....", store.currentPagination() )
-            
             try {
                 const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&metacritic=1,100&search=&page=${store.currentPagination()}&page_size=40`);
                 const data = await response.json();
                 const games = data.results;
-               
-                console.log("Successfully loaded", games);
+                console.log("loadall",games)
+                this.getStores();
                 patchState(store, {
                     games,
                     loading: false
@@ -194,26 +199,30 @@ export const GameStore = signalStore(
             patchState(store, { loading: false, gameDescription: "" })
         },
 
-        loadGameInfo(game: Game) {
+        async loadGameInfo(game: Game) {
+            patchState(store, { loading: true });
             try {
-                this.getDescription(game.id);
-                this.checkForDeals(game.name);
-                patchState(store, {loading: false, gameInfo: game})
+                //TODO: Maybe add timeout??
+                // waits for both, to make sure they arrive
+                await Promise.all([
+                    this.getDescription(game.id),
+                    this.checkForDeals(game.name)
+                ]);
+                patchState(store, {loading: false, gameInfo: game, openInfo: true })
             } catch {
                 console.log("ERROR")
             }
         },
 
-        // TODO: Add a "filter", to filter out () since they cannot be in URLS
-        // and also to remove content in () mostly the year
         async checkForDeals(game: string) {
             const gameDeals = game
                 .replace(/ /g, "%20")
                 .replace(/:/g, "")
                 .replace(/ä/g, "")
                 .replace(/ö/g, "")
-                .replace(/ü/g, "");
-            console.log("Game Name with REPLACE: ", gameDeals);
+                .replace(/ü/g, "")
+                .replace(/\s*\([^)]*\)/g, "");
+            // console.log("Game Name with REPLACE: ", gameDeals);
             patchState(store, { loading: true })
             try {
                 const response = await fetch(`${CHEAPSHARK_URL_BASE}/games?title=${gameDeals}&exact=1`)
@@ -224,8 +233,9 @@ export const GameStore = signalStore(
                 const dealsData = await deals.json();
                 const dealsList = dealsData;
                 // console.log(dealsList) // TODO: maybe info to conncect to steamID
-                console.log("Cheapest Price ever: ", dealsList.cheapestPriceEver);
-                console.log("Deals: ", dealsList.deals)
+                // console.log("Cheapest Price ever: ", dealsList.cheapestPriceEver);
+                // console.log("Deals: ", dealsList.deals);
+                patchState(store, { loading: false, gameDeals: dealsList.deals })
             } catch {
                 patchState(store, { loading: false })
                 console.error("ERROR loading deals");
@@ -233,7 +243,31 @@ export const GameStore = signalStore(
         },
 
         async getReviews() {
+            patchState(store, { loading: true });
+            try {
+                const response = await fetch(`${CHEAPSHARK_URL_BASE}`)
+                patchState(store, { loading: false });
+            } catch {
+                patchState(store, { loading: false });
+            }
+        }, 
 
+        async getStores() {
+            patchState(store, { loading: true })
+            try {   
+                const response = await fetch(`${CHEAPSHARK_URL_BASE}/stores`);
+                const data = await response.json();
+                const stores = data;
+                console.log("STORES:", stores);
+                patchState(store, { loading: false, gameStores: stores})
+            } catch {
+                console.error("ERROR loading stores");
+                patchState(store, { loading: false });
+            }
+        },
+
+        closeInfo() {
+            patchState(store, { loading: false, openInfo: false })
         }
     }))
 );
