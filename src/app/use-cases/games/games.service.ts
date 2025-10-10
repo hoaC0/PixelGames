@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, resource } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 
 export class GamesService {
 
-    // game URL
+  // game URL
   private BASE_URL = 'https://api.rawg.io/api';
   private API_KEY = import.meta.env['NG_APP_RAWG_API_KEY'];
 
@@ -18,7 +18,6 @@ export class GamesService {
       1
       &page_size=40`); // instead if one currentPagination
     const data = await response.json();
-    console.log("servce", data)
     const games = data.results;
     return games;
   }
@@ -51,8 +50,11 @@ export class GamesService {
     return dealsData;
   }
 
-  async getReviews() {
-
+  async getReviews(gameID: number) {
+    const response = await fetch(`${this.BASE_URL}/games/${gameID}/reviews?key=${this.API_KEY}&ordering=-rating&page_size=3`);
+    const data = await response.json();
+    const review = data;
+    return review;
   }
 
   async getAllStores() {

@@ -1,0 +1,22 @@
+<div>
+        @if (gameDeals()) {
+          @for (deal of gameDeals(); track deal.dealID) {
+            <a [href]="'https://www.cheapshark.com/redirect?dealID=' + deal.dealID" target="_blank" class="deal">
+              <div class="logo-container"><img [src]="`https://www.cheapshark.com/img/stores/logos/${+deal.storeID - 1}.png`" alt="" class="logo"></div>
+              <div class="store">{{gameStores()![deal.storeID - 1].storeName}}</div>
+              @if(deal.savings > 0 && deal.savings < 50) {
+                <div class="savings">-{{ deal.savings.toString().split('.')[0] }}%</div>
+              } @else if (deal.savings > 50) {
+                <div class="savings-high">-{{ deal.savings.toString().split('.')[0] }}%</div>
+              } @else {
+                <div class="savings"></div>
+              }
+              <div class="price">${{ deal.price }}</div>
+            </a>
+          }
+        } @else {
+          <div class="no-deals">
+            <div>There are currently no deals for this game at this time</div>
+            <ng-icon name="bootstrapEmojiFrown" class="X"/></div>
+        }
+      </div>

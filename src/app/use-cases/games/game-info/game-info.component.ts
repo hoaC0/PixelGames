@@ -5,6 +5,7 @@ import { bootstrapEmojiFrown } from '@ng-icons/bootstrap-icons';
 import { GameStore } from '../store/games.store';
 import { Game } from '../../../model/game-store.model';
 import { GameReviews } from "../game-reviews/game-reviews";
+import { GameDeals } from "../game-deals/game-deals";
 
 
 @Component({
@@ -12,7 +13,8 @@ import { GameReviews } from "../game-reviews/game-reviews";
   standalone: true,
   imports: [
     NgIconComponent,
-    GameReviews
+    GameReviews,
+    GameDeals
 ],
   providers: [
     provideIcons({ lucideX, bootstrapEmojiFrown })
@@ -25,8 +27,6 @@ export class GameInfoComponent implements OnInit{
   store =  inject(GameStore);
   gameInfo = this.store.gameInfo;
   gameDescription = this.store.gameDescription;
-  gameDeals = this.store.gameDeals;
-  gameStores = this.store.gameStores;
 
   ngOnInit() {
     console.log("STOR ", this.gameInfo())

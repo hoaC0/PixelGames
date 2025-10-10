@@ -176,7 +176,8 @@ export const GameStore = signalStore(
                 // waits for both, to make sure they arrive
                 await Promise.all([
                     this.getDescription(game.id),
-                    this.checkForDeals(game.name)
+                    this.checkForDeals(game.name),
+                    this.getReviews(game.id)
                 ]);
                 patchState(store, {loading: false, gameInfo: game, openInfo: true })
             } catch {
@@ -195,10 +196,11 @@ export const GameStore = signalStore(
             }
         },
 
-        async getReviews() {
+        async getReviews(gameID: number) {
             patchState(store, { loading: true });
             try {
-                const reviews = await gameService.getReviews()
+                const reviews = await gameService.getReviews(gameID);
+                console.log("Reviews", reviews);
                 patchState(store, { loading: false });
             } catch {
                 patchState(store, { loading: false });
