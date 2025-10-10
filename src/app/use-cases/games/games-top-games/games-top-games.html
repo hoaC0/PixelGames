@@ -17,10 +17,12 @@
   }
 </div>
 
+@if ( loading() ) {
+  <app-loading-screen></app-loading-screen>
+}
 @if (showInfo()) {
 <app-game-info (close)="closeInfo()"></app-game-info>
 }
-
 <app-games-pagination></app-games-pagination>
 
 

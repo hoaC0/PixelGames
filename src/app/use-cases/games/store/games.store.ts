@@ -3,12 +3,9 @@ import { Game } from "../../../model/game-store.model";
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { GameDeals } from "../../../model/game-store-deals.model";
 import { GameStores } from "../../../model/game-store-stores.model";
+import { GamesService } from "../games.service";
 
 // TODO: replace fetch with http client
-const GAMES: Game[] = [
-    { id: 1 , name: "Helldivers 2", slug: "helldivers-2" },
-];
-
 type GameState = {
     games: Game[];
     gameInfo: Game | null;
@@ -18,6 +15,7 @@ type GameState = {
     storeLogos: string[];
     openInfo: boolean;
     loading: boolean;
+    error: boolean;
     currentPage: number;
     gamesPerPage: number;
     search: string;
@@ -35,38 +33,24 @@ const initialState: GameState = {
     storeLogos: [],
     openInfo: false,
     loading: false,
+    error: false,
     currentPage: 0,
     gamesPerPage: 3,
     search: "",
     currentPagination: 1,
     currentPaginationPages: [1, 2, 3, 4, 5]
 }
-
-// https://www.cheapshark.com/api/1.0/deals?steamRating=80&metacritic=75&pageSize=50
-
-// game URL
-const BASE_URL = 'https://api.rawg.io/api';
-const API_KEY = import.meta.env['NG_APP_RAWG_API_KEY'];
-
-// game deals URL
-const CHEAPSHARK_URL_BASE = 'https://www.cheapshark.com/api/1.0';
-const CHEAPSHAR_URL_DEALS = "https://www.cheapshark.com/redirect?dealID="
-
-
-
 export const GameStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withMethods(
-    (store) => ({
+  withMethods((store) => {
+    const gameService = inject(GamesService);
+    return {
         // initially
         async loadAllGames() {
+            const games = await gameService.getAllGames();
             patchState(store, { loading: true })
             try {
-                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&metacritic=1,100&search=&page=${store.currentPagination()}&page_size=40`);
-                const data = await response.json();
-                const games = data.results;
-                console.log("loadall",games)
                 this.getStores();
                 patchState(store, {
                     games,
@@ -78,22 +62,18 @@ export const GameStore = signalStore(
             }
         },
         
-        //
         // carousel
-        //
         nextPage() {
             const maxPage = Math.ceil(store.games().length / store.gamesPerPage()) - 1;
             if (store.currentPage() < maxPage) {
                 patchState(store, { currentPage: store.currentPage() + 1 });
             }
         },
-        
         prevPage() {
             if (store.currentPage() > 0) {
                 patchState(store, { currentPage: store.currentPage() - 1 });
             }
         },
-        
         goToPage(page: number) {
             const maxPage = Math.ceil(store.games().length / store.gamesPerPage()) - 1;
             if (page >= 0 && page <= maxPage) {
@@ -101,23 +81,18 @@ export const GameStore = signalStore(
             }
         },
 
-        // 
         // SEARCH
-        // 
         async searchGames(searchTerm: string) {
             patchState(store, { loading: true });
             try {
                 patchState(store, { loading: false, search: searchTerm + "&search_exact=true"}); // TODO: optimise search
                 this.displayCurrentPaginationPage();
-                console.log("Search:", searchTerm)
             } catch {
                 console.error("Error");
             }
         },
 
-        //
         // PAGINATION
-        //
         async displayCurrentPaginationPage() {
             const currentPage = store.currentPagination();
             if (currentPage === 1 || currentPage === 2 || currentPage === 3) {
@@ -135,13 +110,10 @@ export const GameStore = signalStore(
                     ]
                 })
             }
-
             try {
-                const response = await fetch(`${BASE_URL}/games?key=${API_KEY}&search=${store.search()}&search_exact&page=${store.currentPagination()}&page_size=40`); // TODO: &metacritic=1,100 
-                const data = await response.json();
-                const games = data.results;
-                
-                console.log("Successfully loaded", games);
+                const search = store.search();
+                const currentPagination = store.currentPagination();
+                const games = await gameService.getCurrentPaginationPage(search, currentPagination)
                 patchState(store, {
                     games,
                     loading: false
@@ -152,10 +124,10 @@ export const GameStore = signalStore(
             }
         },
 
+        // TODO FIX PAGINATION 
         async nextPagination() {
             if ( store.currentPagination() > 0 ) { // replace 0 with max value
                 patchState(store, { loading: true, currentPagination: store.currentPagination() + 1, })
-                console.log("NEXT: ", store.currentPagination())
             } else {
                 console.log("max already")
                 // CONDITION
@@ -187,9 +159,7 @@ export const GameStore = signalStore(
         async getDescription(gameID: number) {
             patchState( store, { loading: true })
             try {
-                const response = await fetch(`${BASE_URL}/games/${gameID}?key=b160d72957cf445c89d4bd750faeba94`); // TODO: &metacritic=1,100 
-                const data = await response.json();
-                const games = data;
+                const games = await gameService.getDescription(gameID);
                 patchState(store, { loading: false, gameDescription: games.description_raw })
             } catch {
                 console.error("Error loading description")
@@ -215,26 +185,9 @@ export const GameStore = signalStore(
         },
 
         async checkForDeals(game: string) {
-            const gameDeals = game
-                .replace(/ /g, "%20")
-                .replace(/:/g, "")
-                .replace(/ä/g, "")
-                .replace(/ö/g, "")
-                .replace(/ü/g, "")
-                .replace(/\s*\([^)]*\)/g, "");
-            // console.log("Game Name with REPLACE: ", gameDeals);
             patchState(store, { loading: true })
             try {
-                const response = await fetch(`${CHEAPSHARK_URL_BASE}/games?title=${gameDeals}&exact=1`)
-                const data = await response.json();
-                const gameCheap = data[0];
-                const deals = await fetch(`${CHEAPSHARK_URL_BASE}/games?id=${gameCheap.gameID}`);
-                // console.log("LINK ", deals.url);
-                const dealsData = await deals.json();
-                const dealsList = dealsData;
-                // console.log(dealsList) // TODO: maybe info to conncect to steamID
-                // console.log("Cheapest Price ever: ", dealsList.cheapestPriceEver);
-                // console.log("Deals: ", dealsList.deals);
+                const dealsList = await gameService.getDeals(game);
                 patchState(store, { loading: false, gameDeals: dealsList.deals })
             } catch {
                 patchState(store, { loading: false })
@@ -245,7 +198,7 @@ export const GameStore = signalStore(
         async getReviews() {
             patchState(store, { loading: true });
             try {
-                const response = await fetch(`${CHEAPSHARK_URL_BASE}`)
+                const reviews = await gameService.getReviews()
                 patchState(store, { loading: false });
             } catch {
                 patchState(store, { loading: false });
@@ -255,10 +208,7 @@ export const GameStore = signalStore(
         async getStores() {
             patchState(store, { loading: true })
             try {   
-                const response = await fetch(`${CHEAPSHARK_URL_BASE}/stores`);
-                const data = await response.json();
-                const stores = data;
-                console.log("STORES:", stores);
+                const stores = await gameService.getAllStores();
                 patchState(store, { loading: false, gameStores: stores})
             } catch {
                 console.error("ERROR loading stores");
@@ -269,5 +219,6 @@ export const GameStore = signalStore(
         closeInfo() {
             patchState(store, { loading: false, openInfo: false })
         }
-    }))
+    };
+  })
 );

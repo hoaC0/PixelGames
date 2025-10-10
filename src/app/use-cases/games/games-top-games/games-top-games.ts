@@ -4,11 +4,12 @@ import { GameInfoComponent } from '../game-info/game-info.component';
 import { GamesPagination } from "../games-pagination/games-pagination";
 import { GamesSearch } from "../games-search/games-search";
 import { Game } from '../../../model/game-store.model';
+import { LoadingScreen } from "../../shared/components/loading-screen/loading-screen";
 
 
 @Component({
   selector: 'app-games-top-games',
-  imports: [GameInfoComponent, GamesPagination, GamesSearch],
+  imports: [GameInfoComponent, GamesPagination, GamesSearch, LoadingScreen],
   templateUrl: './games-top-games.html',
   styleUrl: './games-top-games.less'
 })

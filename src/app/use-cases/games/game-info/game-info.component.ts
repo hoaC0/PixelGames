@@ -4,14 +4,16 @@ import { lucideX } from '@ng-icons/lucide';
 import { bootstrapEmojiFrown } from '@ng-icons/bootstrap-icons';
 import { GameStore } from '../store/games.store';
 import { Game } from '../../../model/game-store.model';
+import { GameReviews } from "../game-reviews/game-reviews";
 
 
 @Component({
   selector: 'app-game-info',
   standalone: true,
   imports: [
-    NgIconComponent
-  ],
+    NgIconComponent,
+    GameReviews
+],
   providers: [
     provideIcons({ lucideX, bootstrapEmojiFrown })
   ],
