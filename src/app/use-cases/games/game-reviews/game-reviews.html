@@ -1,7 +1,7 @@
 <div class="reviews">
     <div class="review-title">Reviews</div>
     @if ( reviews() ) {
-        @for ( review of reviews()!.results; track review ) {
+        @for ( review of reviews()!.results; track $index ) {
         <div class="review">
             <div class="image-container">
                 @if (review.user.avatar) {

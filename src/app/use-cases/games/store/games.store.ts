@@ -15,6 +15,7 @@ type GameState = {
     gameStores: GameStores[] | null;
     gameReviews: Reviews | null;
     gameReviewPagination: number[];
+    currentGame: number | null;
     currentgameReviewPagination: number;
     storeLogos: string[];
     openInfo: boolean;
@@ -36,6 +37,7 @@ const initialState: GameState = {
     gameStores: null,
     gameReviews: null,
     gameReviewPagination: [1, 2, 3],
+    currentGame: null,
     currentgameReviewPagination: 1,
     storeLogos: [],
     openInfo: false,
@@ -215,20 +217,21 @@ export const GameStore = signalStore(
         initialReview() {
             patchState(store, { gameReviewPagination: initialState.gameReviewPagination, currentgameReviewPagination: initialState.currentgameReviewPagination });
         },
-        async getReviews(gameID: number) {
+        async getReviews(gameID: number) { // init
             patchState(store, { loading: true });
             try {
-                const reviews = await gameService.getReviews(gameID);
+                const reviews = await gameService.getReviews(1, gameID);
                 console.log("Reviews", reviews);
-                patchState(store, { loading: false, gameReviews: reviews});
+                patchState(store, { loading: false, gameReviews: reviews, currentGame: gameID});
             } catch {
                 patchState(store, { loading: false });
             }
         },
-        async nextReview(page: number, next: string) {
+        async nextReview(page: number) {
             patchState(store, { loading: true });
+            const gameID = store.currentGame(); 
             try {
-                const reviews = await gameService.getNextReviews(next);
+                const reviews = await gameService.getReviews(page + 1, gameID ?? 0);
                 console.log(reviews);
                 patchState(store, { loading: false, gameReviews: reviews, currentgameReviewPagination: page, gameReviewPagination: [page - 1, page, page + 1] })
             } catch {
@@ -236,10 +239,11 @@ export const GameStore = signalStore(
                 console.error( "Error loading Reviews");
             }
         },
-        async prevReview(page: number, prev: string) {
+        async prevReview(page: number) {
             patchState(store, { loading: true });
+            const gameID = store.currentGame();
             try {
-                const reviews = await gameService.getNextReviews(prev);
+                const reviews = await gameService.getReviews(page - 1, gameID ?? 0);
                 console.log(reviews);
                 patchState(store, { loading: false, gameReviews: reviews, currentgameReviewPagination: page, gameReviewPagination: [page - 1, page, page + 1] })
             } catch {
@@ -247,10 +251,11 @@ export const GameStore = signalStore(
                 console.error( "Error loading Reviews");
             }
         },
-        async goToReview(page: number, gameID: number) {
+        async goToReview(page: number) {
             patchState(store, { loading: true });
+            const gameID = store.currentGame();
             try {
-                const reviews = await gameService.getToReview(page, gameID);
+                const reviews = await gameService.getToReview(page, gameID ?? 0);
                 console.log(reviews);
                 patchState(store, { loading: false, gameReviews: reviews, currentgameReviewPagination: page,  gameReviewPagination: [page - 1, page, page + 1] });
             } catch {

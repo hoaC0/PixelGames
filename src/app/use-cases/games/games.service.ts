@@ -55,26 +55,14 @@ export class GamesService {
     return dealsData;
   }
 
-  async getReviews(gameID: number) {
-    const response = await fetch(`${this.BASE_URL}/games/${gameID}/reviews?key=${this.API_KEY}&ordering=-rating&page_size=3`);
-    const data = await response.json();
-    const review = data;
-    return review;
-  }
-  async getNextReviews(next: string) {
-    const response = await fetch(next);
-    const data = await response.json();
-    const review = data;
-    return review;
-  }
-  async getPrevReviews(prev: string) {
-    const response = await fetch(prev);
+  async getReviews(page: number, gameID: number) {
+    const response = await fetch(`${this.BASE_URL}/games/${gameID}/reviews?key=${this.API_KEY}&ordering=-rating&page=${page}&page_size=3`);
     const data = await response.json();
     const review = data;
     return review;
   }
   async getToReview(page: number, gameID: number) {
-    const response = await fetch(`https://api.rawg.io/api/games/${gameID}/reviews?key=${this.API_KEY}&ordering=-rating&page=${page}&page_size=3`);
+    const response = await fetch(`${this.BASE_URL}/games/${gameID}/reviews?key=${this.API_KEY}&ordering=-rating&page=${page}&page_size=3`);
     const data = await response.json();
     const review = data;
     return review;

@@ -29,16 +29,18 @@ export class GameReviews implements OnInit {
     console.log(this.reviews()!.next);
   }
 
+  // TODO: Pagination can be above/below min max pages like -1 etc. => need to fix + also when above max page, gameID becomes 0 / null, so cant go back with goToPage
   nextPage() {
-    this.store.nextReview(this.currentPagination() + 1, this.reviews()!.next ?? "")
+    this.store.nextReview(this.currentPagination());
+    console.log("current page; ", this.currentPagination())
+    console.log("next page; ", this.currentPagination() + 1)
+    console.log(this.reviews()!.results[0].game)
   }
   prevPage() {
-    this.store.prevReview(this.currentPagination() - 1, this.reviews()!.next ?? "")
+    this.store.prevReview(this.currentPagination());
   }
   goToPage(page: number) {
     this.store.goToReview(
-      page ?? 0, 
-      this.reviews()?.results[0]?.game ?? 0
-    );
+      page ?? 0);
   }
 }

@@ -9,10 +9,6 @@ import { GameStore } from '../store/games.store';
 })
 export class GamesPagination {
 
-  constructor() {
-    console.log(this.store.currentPaginationPages())
-  }
-
   store = inject(GameStore);
 
   nextPage() {
