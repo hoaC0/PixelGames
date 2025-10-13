@@ -10,6 +10,7 @@ export interface UserReview {
   text: string;
   rating: number;
   created: string;
+  game: number;
 }
 
 export interface User {

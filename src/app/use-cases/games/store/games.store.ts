@@ -14,6 +14,8 @@ type GameState = {
     gameDeals: GameDeals[] | null;
     gameStores: GameStores[] | null;
     gameReviews: Reviews | null;
+    gameReviewPagination: number[];
+    currentgameReviewPagination: number;
     storeLogos: string[];
     openInfo: boolean;
     loading: boolean;
@@ -33,6 +35,8 @@ const initialState: GameState = {
     gameDeals: null,
     gameStores: null,
     gameReviews: null,
+    gameReviewPagination: [1, 2, 3],
+    currentgameReviewPagination: 1,
     storeLogos: [],
     openInfo: false,
     loading: false,
@@ -65,6 +69,15 @@ export const GameStore = signalStore(
             }
         },
         
+        async loadCarousel() {
+            patchState(store, {loading: true});
+            try {
+                patchState(store, {loading: false});
+            } catch {
+                patchState(store, {loading: false});
+            }
+        },
+
         // carousel
         nextPage() {
             const maxPage = Math.ceil(store.games().length / store.gamesPerPage()) - 1;
@@ -199,16 +212,52 @@ export const GameStore = signalStore(
             }
         },
 
+        initialReview() {
+            patchState(store, { gameReviewPagination: initialState.gameReviewPagination, currentgameReviewPagination: initialState.currentgameReviewPagination });
+        },
         async getReviews(gameID: number) {
             patchState(store, { loading: true });
             try {
                 const reviews = await gameService.getReviews(gameID);
                 console.log("Reviews", reviews);
-                patchState(store, { loading: false, gameReviews: reviews });
+                patchState(store, { loading: false, gameReviews: reviews});
             } catch {
                 patchState(store, { loading: false });
             }
-        }, 
+        },
+        async nextReview(page: number, next: string) {
+            patchState(store, { loading: true });
+            try {
+                const reviews = await gameService.getNextReviews(next);
+                console.log(reviews);
+                patchState(store, { loading: false, gameReviews: reviews, currentgameReviewPagination: page, gameReviewPagination: [page - 1, page, page + 1] })
+            } catch {
+                patchState(store, { loading: false });
+                console.error( "Error loading Reviews");
+            }
+        },
+        async prevReview(page: number, prev: string) {
+            patchState(store, { loading: true });
+            try {
+                const reviews = await gameService.getNextReviews(prev);
+                console.log(reviews);
+                patchState(store, { loading: false, gameReviews: reviews, currentgameReviewPagination: page, gameReviewPagination: [page - 1, page, page + 1] })
+            } catch {
+                patchState(store, { loading: false });
+                console.error( "Error loading Reviews");
+            }
+        },
+        async goToReview(page: number, gameID: number) {
+            patchState(store, { loading: true });
+            try {
+                const reviews = await gameService.getToReview(page, gameID);
+                console.log(reviews);
+                patchState(store, { loading: false, gameReviews: reviews, currentgameReviewPagination: page,  gameReviewPagination: [page - 1, page, page + 1] });
+            } catch {
+                patchState(store, { loading: false });
+                console.error( "Error loading Reviews");
+            }
+        },
 
         async getStores() {
             patchState(store, { loading: true })
@@ -223,7 +272,7 @@ export const GameStore = signalStore(
 
         closeInfo() {
             patchState(store, { loading: false, openInfo: false })
-        }
+        },
     };
   })
 );
