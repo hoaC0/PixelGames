@@ -21,11 +21,19 @@
         font-family: "Press Start 2P", system-ui;
         font-weight: 400;
         font-style: normal;
-        transition: background .25s ease-in-out, color .25s ease-in-out;
+        transition: background .25s ease-in-out, color .25s ease-in-out, transform .25s ease-in-out;
     }
+    
     .pagination-page:hover {
         background: white;
         color: black;
+    }
+
+    .pagination-page.active {
+        background: #f093fb;
+        color: white;
+        transform: translateY(-5px);
+        border: 3px solid white;
     }
 
     .pagination-arrow {
@@ -42,9 +50,9 @@
         font-style: normal;
         transition: background .25s ease-in-out, color .25s ease-in-out;
     }
+    
     .pagination-arrow:hover {
         background: white;
         color: black;
     }
 }
-// TODO: when selected button should be levitated

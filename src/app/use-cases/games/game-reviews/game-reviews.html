@@ -24,7 +24,12 @@
             <button class="button button2">...</button>
         }
         @for(page of page(); track page) {
-            <button class="button" (click)="goToPage(page)">{{page}}</button>
+            <button 
+                class="button" 
+                [class.active]="page === currentPagination()"
+                (click)="goToPage(page)">
+                {{page}}
+            </button>
         }
         @if(currentPagination() != PagesPagination) {
             <button class="button button2">...</button>
@@ -33,4 +38,3 @@
         <button class="button" (click)="nextPage()">></button>
     </div>
 </div>
-<!-- TODO: some comments have DIVs or BR or even other HTML elemets randomly -->

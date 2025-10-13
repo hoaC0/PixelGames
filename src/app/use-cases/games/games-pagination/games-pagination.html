@@ -1,9 +1,14 @@
 <div class="pagination">
     <button class="pagination-arrow" (click)="prevPage()">
-        <
+        
     </button>
     @for (item of this.store.currentPaginationPages(); track item) {
-    <button class="pagination-page" (click)="currentPagination(item)">{{ item  }}</button>
+    <button 
+        class="pagination-page" 
+        [class.active]="item === store.currentPagination()"
+        (click)="currentPagination(item)">
+        {{ item }}
+    </button>
     }
     <button class="pagination-arrow" (click)="nextPage()">
         >

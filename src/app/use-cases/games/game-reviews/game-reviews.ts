@@ -16,31 +16,41 @@ export class GameReviews implements OnInit {
 
   ngOnInit() {
     this.store.initialReview();
-    const pages = Math.floor(this.reviews()!.count / 3);
-    const additionalPage = this.reviews()!.count % 3;
-    this.PagesPagination = pages;
-    const count = this.reviews()!.count;
-    if( additionalPage != 0) {
-      this.PagesPagination = this.PagesPagination + 1;
+    const reviews = this.reviews();
+    if (reviews) {
+      this.PagesPagination = Math.ceil(reviews.count / 3);
+      console.log("count: ", reviews.count);
+      console.log("total pages: ", this.PagesPagination);
+      console.log("current page: ", this.currentPagination());
     }
-    console.log("count ", count);
-    console.log("total Pages: ", this.PagesPagination);
-    console.log(this.currentPagination());
-    console.log(this.reviews()!.next);
   }
 
-  // TODO: Pagination can be above/below min max pages like -1 etc. => need to fix + also when above max page, gameID becomes 0 / null, so cant go back with goToPage
   nextPage() {
-    this.store.nextReview(this.currentPagination());
-    console.log("current page; ", this.currentPagination())
-    console.log("next page; ", this.currentPagination() + 1)
-    console.log(this.reviews()!.results[0].game)
+    const currentPage = this.currentPagination();
+    if (currentPage < this.PagesPagination) {
+      this.store.nextReview(currentPage);
+      console.log("mov to page: ", currentPage + 1)
+    } else {
+      console.log("alr at max page: ", this.PagesPagination);
+    }
   }
+  
   prevPage() {
-    this.store.prevReview(this.currentPagination());
+    const currentPage = this.currentPagination();
+    if (currentPage > 1) {
+      this.store.prevReview(currentPage);
+      console.log("moving to page: ", currentPage - 1)
+    } else {
+      console.log("already at first page");
+    }
   }
+  
   goToPage(page: number) {
-    this.store.goToReview(
-      page ?? 0);
+    if (page >= 1 && page <= this.PagesPagination) {
+      this.store.goToReview(page);
+      console.log("Going to page: ", page);
+    } else {
+
+    }
   }
 }

@@ -217,50 +217,122 @@ export const GameStore = signalStore(
         initialReview() {
             patchState(store, { gameReviewPagination: initialState.gameReviewPagination, currentgameReviewPagination: initialState.currentgameReviewPagination });
         },
+        
+        getMaxReviewPages() {
+            const reviews = store.gameReviews();
+            if (!reviews) return 1;
+            const pages = Math.ceil(reviews.count / 3);
+            return pages > 0 ? pages : 1;
+        },
+        
+        updateReviewPaginationArray(currentPage: number) {
+            const maxPages = this.getMaxReviewPages();
+            if (currentPage === 1) {
+                patchState(store, { gameReviewPagination: [1, 2, 3].filter(p => p <= maxPages) });
+            } else if (currentPage === 2) {
+                patchState(store, { gameReviewPagination: [1, 2, 3].filter(p => p <= maxPages) });
+            } else if (currentPage >= maxPages - 1) {
+                const arr = [maxPages - 2, maxPages - 1, maxPages].filter(p => p > 0);
+                patchState(store, { gameReviewPagination: arr });
+            } else {
+                patchState(store, { gameReviewPagination: [currentPage - 1, currentPage, currentPage + 1] });
+            }
+        },
+        
         async getReviews(gameID: number) { // init
             patchState(store, { loading: true });
             try {
                 const reviews = await gameService.getReviews(1, gameID);
                 console.log("Reviews", reviews);
-                patchState(store, { loading: false, gameReviews: reviews, currentGame: gameID});
+                patchState(store, { loading: false, gameReviews: reviews, currentGame: gameID, currentgameReviewPagination: 1 });
+                this.updateReviewPaginationArray(1);
             } catch {
                 patchState(store, { loading: false });
             }
         },
+        
         async nextReview(page: number) {
+            const gameID = store.currentGame();
+            if (!gameID) {
+                console.error("No game ID available");
+                return;
+            }
+            const maxPages = this.getMaxReviewPages();
+            const nextPage = page + 1;
+            if (nextPage > maxPages) {
+                console.log("Already at max page");
+                return;
+            }
+            
             patchState(store, { loading: true });
-            const gameID = store.currentGame(); 
             try {
-                const reviews = await gameService.getReviews(page + 1, gameID ?? 0);
+                const reviews = await gameService.getReviews(nextPage, gameID);
                 console.log(reviews);
-                patchState(store, { loading: false, gameReviews: reviews, currentgameReviewPagination: page, gameReviewPagination: [page - 1, page, page + 1] })
+                patchState(store, { 
+                    loading: false, 
+                    gameReviews: reviews, 
+                    currentgameReviewPagination: nextPage 
+                });
+                this.updateReviewPaginationArray(nextPage);
             } catch {
                 patchState(store, { loading: false });
-                console.error( "Error loading Reviews");
+                console.error("Error loading Reviews");
             }
         },
+        
         async prevReview(page: number) {
-            patchState(store, { loading: true });
             const gameID = store.currentGame();
+            if (!gameID) {
+                console.error("No game ID available");
+                return;
+            }
+            const prevPage = page - 1;
+            if (prevPage < 1) {
+                console.log("Already at first page");
+                return;
+            }
+            
+            patchState(store, { loading: true });
             try {
-                const reviews = await gameService.getReviews(page - 1, gameID ?? 0);
+                const reviews = await gameService.getReviews(prevPage, gameID);
                 console.log(reviews);
-                patchState(store, { loading: false, gameReviews: reviews, currentgameReviewPagination: page, gameReviewPagination: [page - 1, page, page + 1] })
+                patchState(store, { 
+                    loading: false, 
+                    gameReviews: reviews, 
+                    currentgameReviewPagination: prevPage 
+                });
+                this.updateReviewPaginationArray(prevPage);
             } catch {
                 patchState(store, { loading: false });
-                console.error( "Error loading Reviews");
+                console.error("Error loading Reviews");
             }
         },
+        
         async goToReview(page: number) {
-            patchState(store, { loading: true });
             const gameID = store.currentGame();
+            if (!gameID) {
+                console.error("No game ID available");
+                return;
+            }
+            const maxPages = this.getMaxReviewPages();
+            if (page < 1 || page > maxPages) {
+                console.log(`Page ${page} out of bounds (1-${maxPages})`);
+                return;
+            }
+            
+            patchState(store, { loading: true });
             try {
-                const reviews = await gameService.getToReview(page, gameID ?? 0);
+                const reviews = await gameService.getToReview(page, gameID);
                 console.log(reviews);
-                patchState(store, { loading: false, gameReviews: reviews, currentgameReviewPagination: page,  gameReviewPagination: [page - 1, page, page + 1] });
+                patchState(store, { 
+                    loading: false, 
+                    gameReviews: reviews, 
+                    currentgameReviewPagination: page 
+                });
+                this.updateReviewPaginationArray(page);
             } catch {
                 patchState(store, { loading: false });
-                console.error( "Error loading Reviews");
+                console.error("Error loading Reviews");
             }
         },
 
