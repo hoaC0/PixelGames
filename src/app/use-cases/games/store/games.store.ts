@@ -6,9 +6,9 @@ import { GameStores } from "../../../model/game-store-stores.model";
 import { GamesService } from "../games.service";
 import { Reviews } from "../../../model/game-store-reviews.model";
 
-// TODO: replace fetch with http client
 type GameState = {
     games: Game[];
+    topGames: Game[]; // Separate 15 top games für Carousel
     gameInfo: Game | null;
     gameDescription: string;
     gameDeals: GameDeals[] | null;
@@ -26,11 +26,12 @@ type GameState = {
     search: string;
     currentPagination: number;
     currentPaginationPages: number[];
-    // filter: 
+    carouselAutoRotate: boolean;
 }
 
 const initialState: GameState = {
     games: [],
+    topGames: [],
     gameInfo: null,
     gameDescription: "",
     gameDeals: null,
@@ -47,20 +48,39 @@ const initialState: GameState = {
     gamesPerPage: 3,
     search: "",
     currentPagination: 1,
-    currentPaginationPages: [1, 2, 3, 4, 5]
+    currentPaginationPages: [1, 2, 3, 4, 5],
+    carouselAutoRotate: true
 }
+
 export const GameStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withMethods((store) => {
     const gameService = inject(GamesService);
     return {
+        // Load top 15 games with high ratings
+        async loadTopGames() {
+            patchState(store, { loading: true });
+            try {
+                const topGames = await gameService.getTopGames();
+                patchState(store, {
+                    topGames,
+                    loading: false,
+                    currentPage: 0
+                });
+            } catch (error) {
+                console.error("Error loading top games:", error);
+                patchState(store, { loading: false });
+            }
+        },
+
         // initially
         async loadAllGames() {
             const games = await gameService.getAllGames();
             patchState(store, { loading: true })
             try {
                 this.getStores();
+                await this.loadTopGames(); // Load top games for carousel
                 patchState(store, {
                     games,
                     loading: false
@@ -80,30 +100,35 @@ export const GameStore = signalStore(
             }
         },
 
-        // carousel
+        // carousel with automatic rotation
         nextPage() {
-            const maxPage = Math.ceil(store.games().length / store.gamesPerPage()) - 1;
-            if (store.currentPage() < maxPage) {
-                patchState(store, { currentPage: store.currentPage() + 1 });
-            }
+            const maxPage = Math.ceil(store.topGames().length / store.gamesPerPage()) - 1;
+            const nextPage = store.currentPage() < maxPage ? store.currentPage() + 1 : 0;
+            patchState(store, { currentPage: nextPage });
         },
+        
         prevPage() {
-            if (store.currentPage() > 0) {
-                patchState(store, { currentPage: store.currentPage() - 1 });
-            }
+            const maxPage = Math.ceil(store.topGames().length / store.gamesPerPage()) - 1;
+            const prevPage = store.currentPage() > 0 ? store.currentPage() - 1 : maxPage;
+            patchState(store, { currentPage: prevPage });
         },
+        
         goToPage(page: number) {
-            const maxPage = Math.ceil(store.games().length / store.gamesPerPage()) - 1;
+            const maxPage = Math.ceil(store.topGames().length / store.gamesPerPage()) - 1;
             if (page >= 0 && page <= maxPage) {
                 patchState(store, { currentPage: page });
             }
+        },
+
+        setAutoRotate(value: boolean) {
+            patchState(store, { carouselAutoRotate: value });
         },
 
         // SEARCH
         async searchGames(searchTerm: string) {
             patchState(store, { loading: true });
             try {
-                patchState(store, { loading: false, search: searchTerm + "&search_exact=true"}); // TODO: optimise search
+                patchState(store, { loading: false, search: searchTerm + "&search_exact=true"}); 
                 this.displayCurrentPaginationPage();
             } catch {
                 console.error("Error");
@@ -142,14 +167,11 @@ export const GameStore = signalStore(
             }
         },
 
-        // TODO FIX PAGINATION 
         async nextPagination() {
-            if ( store.currentPagination() > 0 ) { // replace 0 with max value
+            if ( store.currentPagination() > 0 ) {
                 patchState(store, { loading: true, currentPagination: store.currentPagination() + 1, })
             } else {
                 console.log("max already")
-                // CONDITION
-                // css disable arrow button 
             }
             this.displayCurrentPaginationPage();
         },
@@ -159,8 +181,6 @@ export const GameStore = signalStore(
                 patchState(store, { loading: true, currentPagination: store.currentPagination() - 1 })
             } else {
                 console.log("min already")
-                // CONDITION
-                // css disable arrow button 
             }
             this.displayCurrentPaginationPage()
         },
@@ -171,9 +191,7 @@ export const GameStore = signalStore(
             this.displayCurrentPaginationPage()
         },
 
-        // 
-        //  GameInfo
-        // 
+        // GameInfo
         async getDescription(gameID: number) {
             patchState( store, { loading: true })
             try {
@@ -190,8 +208,6 @@ export const GameStore = signalStore(
         async loadGameInfo(game: Game) {
             patchState(store, { loading: true });
             try {
-                //TODO: Maybe add timeout??
-                // waits for both, to make sure they arrive
                 await Promise.all([
                     this.getDescription(game.id),
                     this.checkForDeals(game.name),
@@ -239,7 +255,7 @@ export const GameStore = signalStore(
             }
         },
         
-        async getReviews(gameID: number) { // init
+        async getReviews(gameID: number) {
             patchState(store, { loading: true });
             try {
                 const reviews = await gameService.getReviews(1, gameID);

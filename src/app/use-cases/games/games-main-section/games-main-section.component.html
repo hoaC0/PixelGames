@@ -1,6 +1,3 @@
-<!-- TODO: Fix caroussel -->
-<!-- TODO: enhance styling css -->
-<!-- TODO: add timer/loading bar -->
 <div class="main-container">
     <div class="top-sale"><h1>Browse the top Games...</h1></div>
     <div class="top-sale-games-container">
@@ -12,8 +9,7 @@
                 <div class="button">
                     <button 
                         class="nav-arrow" 
-                        (click)="store.prevPage()"
-                        [disabled]="store.currentPage() === 0">
+                        (click)="manualNavigation('prev')">
                         <i class="fa-solid fa-chevron-left"></i>
                     </button>
                 </div>
@@ -31,17 +27,27 @@
                 <div class="button">
                     <button 
                         class="nav-arrow" 
-                        (click)="store.nextPage()"
-                        [disabled]="store.currentPage() === Math.ceil(store.games().length / store.gamesPerPage()) - 1">
+                        (click)="manualNavigation('next')">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
                 </div>
             </div>
             
-            <div class="page-indicator">
-                {{ store.currentPage() + 1 }} / {{ Math.ceil(store.games().length / store.gamesPerPage()) }}
+            <div class="progress-indicators">
+                @for (page of [].constructor(totalPages()); track $index) {
+                    <div 
+                        class="progress-indicator"
+                        [class.active]="$index === store.currentPage()"
+                        (click)="goToPage($index)">
+                        <div class="progress-bar">
+                            <div 
+                                class="progress-fill"
+                                [style.width.%]="$index === store.currentPage() ? progressPercentage : ($index < store.currentPage() ? 100 : 0)">
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         }
     </div>
-    <!-- TODO: Loading bar "countdown" until next 3 games -->
 </div>

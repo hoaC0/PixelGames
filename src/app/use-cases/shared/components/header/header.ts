@@ -8,5 +8,4 @@ import { Component } from '@angular/core';
 })
 export class Header {
   // TODO: Search method / function
-  // TODO: move search function lower to top games top?
 }

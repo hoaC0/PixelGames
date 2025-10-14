@@ -14,15 +14,23 @@ export class GamesService {
   private CHEAPSHARK_URL_BASE = 'https://www.cheapshark.com/api/1.0';
 
   async getAllGames() {
-    const response = await fetch(`${this.BASE_URL}/games?key=${this.API_KEY}&metacritic=1,100&search=&page=
-      1
-      &page_size=40`); // instead if one currentPagination
+    const response = await fetch(`${this.BASE_URL}/games?key=${this.API_KEY}&metacritic=1,100&search=&page=1&page_size=40`);
     const data = await response.json();
     const games = data.results;
     return games;
   }
 
-  // TODO: #1 13.10.2025 carousel
+  // Get top 15 games with high metacritic scores - randomized
+  async getTopGames() {
+    const response = await fetch(`${this.BASE_URL}/games?key=${this.API_KEY}&metacritic=80,100&ordering=-metacritic,-rating&page_size=50`);
+    const data = await response.json();
+    const allTopGames = data.results;
+    
+    // Shuffle and take 15 random games
+    const shuffled = allTopGames.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, 15);
+  }
+
   async getCurrentPaginationPage(search: string, currentPagination: number) {
     const response = await fetch(`${this.BASE_URL}/games?key=${this.API_KEY}&search=${search}&search_exact&page=${currentPagination}&page_size=40`);
     const data = await response.json();
@@ -34,7 +42,7 @@ export class GamesService {
   }
 
   async getDescription(gameID: number) {
-    const response = await fetch(`${this.BASE_URL}/games/${gameID}?key=b160d72957cf445c89d4bd750faeba94`); // TODO: &metacritic=1,100 
+    const response = await fetch(`${this.BASE_URL}/games/${gameID}?key=b160d72957cf445c89d4bd750faeba94`);
     const data = await response.json();
     return data;
   }
@@ -61,6 +69,7 @@ export class GamesService {
     const review = data;
     return review;
   }
+  
   async getToReview(page: number, gameID: number) {
     const response = await fetch(`${this.BASE_URL}/games/${gameID}/reviews?key=${this.API_KEY}&ordering=-rating&page=${page}&page_size=3`);
     const data = await response.json();
@@ -74,6 +83,4 @@ export class GamesService {
     const stores = data;
     return stores;
   }
-
-
 }

@@ -30,6 +30,7 @@
     grid-row: 3;
     justify-content: center;
     align-items: center;
+    gap: 2rem;
   }
 
   .top-sale-games {
@@ -42,36 +43,8 @@
     background: rgba(255, 255, 255, 0.05);
     border-radius: 1rem;
     backdrop-filter: blur(10px);
-
-    .top-sale-games {
-      display: grid;
-      width: 75vw;
-      height: 50vh;
-      grid-template-columns: 5rem 1fr 1fr 1fr 5rem;
-      gap: 1.5rem;
-      padding: 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 1rem;
-      backdrop-filter: blur(10px);
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    /* Only animate when this class is added */
-    .top-sale-games.animate-in {
-      animation: flyInFromRight 0.8s ease-out forwards;
-    }
-
-    @keyframes flyInFromRight {
-      0% {
-        opacity: 0;
-        transform: translateX(100px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
+    opacity: 1;
+    transform: translateX(0);
 
     .nav-arrow {
       background: transparent;
@@ -80,13 +53,8 @@
       cursor: pointer;
       transition: transform 0.2s ease;
 
-      &:hover:not(:disabled) {
+      &:hover {
         transform: scale(1.1);
-      }
-
-      &:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
       }
     }
 
@@ -168,6 +136,59 @@
         padding: 0.5rem 1rem;
         border-radius: 0.5rem;
       }
+    }
+  }
+
+  .progress-indicators {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+
+  .progress-indicator {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &.active {
+      transform: scale(1.15);
+    }
+  }
+
+  .progress-bar {
+    width: 60px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 4px;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+  }
+
+  .progress-indicator.active .progress-fill {
+    background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+    box-shadow: 0 0 15px rgba(240, 147, 251, 0.8);
+    animation: glow 0.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 10px rgba(240, 147, 251, 0.5);
+    }
+    to {
+      box-shadow: 0 0 20px rgba(240, 147, 251, 1);
     }
   }
 }
