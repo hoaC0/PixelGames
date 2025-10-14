@@ -5,7 +5,7 @@
     <div class="top-sale"><h1>Browse the top Games...</h1></div>
     <div class="top-sale-games-container">
         @if (store.loading()) {
-            <p>Loading...</p>
+            <app-loading-screen></app-loading-screen>
         } @else if (visibleGames().length > 0) {
             <div class="top-sale-games">
 
@@ -38,10 +38,13 @@
                 </div>
             </div>
             
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            
             <div class="page-indicator">
                 {{ store.currentPage() + 1 }} / {{ Math.ceil(store.games().length / store.gamesPerPage()) }}
             </div>
         }
     </div>
-    <!-- TODO: Loading bar "countdown" until next 3 games -->
 </div>

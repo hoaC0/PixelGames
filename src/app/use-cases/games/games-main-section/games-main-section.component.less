@@ -42,23 +42,11 @@
     background: rgba(255, 255, 255, 0.05);
     border-radius: 1rem;
     backdrop-filter: blur(10px);
-
-    .top-sale-games {
-      display: grid;
-      width: 75vw;
-      height: 50vh;
-      grid-template-columns: 5rem 1fr 1fr 1fr 5rem;
-      gap: 1.5rem;
-      padding: 1rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 1rem;
-      backdrop-filter: blur(10px);
-      opacity: 1;
-      transform: translateX(0);
-    }
+    opacity: 1;
+    transform: translateX(0);
 
     /* Only animate when this class is added */
-    .top-sale-games.animate-in {
+    &.animate-in {
       animation: flyInFromRight 0.8s ease-out forwards;
     }
 
@@ -170,5 +158,38 @@
         border-radius: 0.5rem;
       }
     }
+  }
+
+  .progress-container {
+    width: 75vw;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 1rem;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    width: 0%;
+    animation: progress 8s linear infinite;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+  }
+
+  @keyframes progress {
+    0% {
+      width: 0%;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+
+  .page-indicator {
+    margin-top: 1rem;
+    color: white;
+    font-size: 1.2rem;
+    text-align: center;
   }
 }
