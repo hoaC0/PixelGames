@@ -8,7 +8,7 @@ import { Reviews } from "../../../model/game-store-reviews.model";
 
 type GameState = {
     games: Game[];
-    topGames: Game[]; // Separate 15 top games für Carousel
+    topGames: Game[];
     gameInfo: Game | null;
     gameDescription: string;
     gameDeals: GameDeals[] | null;
@@ -191,7 +191,6 @@ export const GameStore = signalStore(
             this.displayCurrentPaginationPage()
         },
 
-        // GameInfo
         async getDescription(gameID: number) {
             patchState( store, { loading: true })
             try {

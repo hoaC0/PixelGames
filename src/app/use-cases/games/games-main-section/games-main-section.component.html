@@ -1,3 +1,6 @@
+<!-- TODO: Fix caroussel -->
+<!-- TODO: enhance styling css -->
+<!-- TODO: add timer/loading bar -->
 <div class="main-container">
     <div class="top-sale"><h1>Browse the top Games...</h1></div>
     <div class="top-sale-games-container">
@@ -9,13 +12,14 @@
                 <div class="button">
                     <button 
                         class="nav-arrow" 
-                        (click)="manualNavigation('prev')">
+                        (click)="store.prevPage()"
+                        [disabled]="store.currentPage() === 0">
                         <i class="fa-solid fa-chevron-left"></i>
                     </button>
                 </div>
                 
                 @for (game of visibleGames(); track game.id) {
-                    <div class="game">
+                    <div class="game" (click)="openInfo(game)">
                         <div class="game-image">
                             <img [src]="game.background_image" [alt]="game.name" class="game-image">
                         </div>
@@ -27,27 +31,17 @@
                 <div class="button">
                     <button 
                         class="nav-arrow" 
-                        (click)="manualNavigation('next')">
+                        (click)="store.nextPage()"
+                        [disabled]="store.currentPage() === Math.ceil(store.games().length / store.gamesPerPage()) - 1">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
                 </div>
             </div>
             
-            <div class="progress-indicators">
-                @for (page of [].constructor(totalPages()); track $index) {
-                    <div 
-                        class="progress-indicator"
-                        [class.active]="$index === store.currentPage()"
-                        (click)="goToPage($index)">
-                        <div class="progress-bar">
-                            <div 
-                                class="progress-fill"
-                                [style.width.%]="$index === store.currentPage() ? progressPercentage : ($index < store.currentPage() ? 100 : 0)">
-                            </div>
-                        </div>
-                    </div>
-                }
+            <div class="page-indicator">
+                {{ store.currentPage() + 1 }} / {{ Math.ceil(store.games().length / store.gamesPerPage()) }}
             </div>
         }
     </div>
+    <!-- TODO: Loading bar "countdown" until next 3 games -->
 </div>
