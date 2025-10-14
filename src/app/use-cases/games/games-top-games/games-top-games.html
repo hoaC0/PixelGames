@@ -1,5 +1,4 @@
 <app-games-search></app-games-search>
-<!-- TODO: add filter -->
 
 <div class="top-games-container">
   @for (game of games(); track game.id) {
@@ -8,7 +7,10 @@
     <div class="game-info">
       <h3>{{ game.name }}</h3>
       <p class="released">Released: {{ game.released }}</p>
-      <p class="rating">⭐ {{ game.rating }}/5</p>
+      <p class="rating">
+        <ng-icon name="lucideStar" class="star-icon"></ng-icon>
+        {{ game.rating }}/5
+      </p>
       @if (game.metacritic) {
       <p class="metacritic">Metacritic: {{ game.metacritic }}</p>
       }
@@ -24,5 +26,3 @@
 <app-game-info (close)="closeInfo()"></app-game-info>
 }
 <app-games-pagination></app-games-pagination>
-
-

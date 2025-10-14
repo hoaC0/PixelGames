@@ -106,9 +106,18 @@
         }
         
         &.rating {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
             color: #ffd43b;
             font-weight: 600;
             text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+            .star-icon {
+                font-size: 1rem;
+                color: #ffd43b;
+                filter: drop-shadow(0 0 4px rgba(255, 212, 59, 0.6));
+            }
         }
         
         &.metacritic {

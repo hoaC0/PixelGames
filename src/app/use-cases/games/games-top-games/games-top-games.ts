@@ -5,11 +5,14 @@ import { GamesPagination } from "../games-pagination/games-pagination";
 import { GamesSearch } from "../games-search/games-search";
 import { Game } from '../../../model/game-store.model';
 import { LoadingScreen } from "../../shared/components/loading-screen/loading-screen";
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { lucideStar } from '@ng-icons/lucide';
 
 
 @Component({
   selector: 'app-games-top-games',
-  imports: [GameInfoComponent, GamesPagination, GamesSearch, LoadingScreen],
+  imports: [GameInfoComponent, GamesPagination, GamesSearch, LoadingScreen, NgIconComponent],
+  providers: [provideIcons({ lucideStar })],
   templateUrl: './games-top-games.html',
   styleUrl: './games-top-games.less'
 })

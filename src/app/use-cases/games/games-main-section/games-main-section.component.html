@@ -1,6 +1,3 @@
-<!-- TODO: Fix caroussel -->
-<!-- TODO: enhance styling css -->
-<!-- TODO: add timer/loading bar -->
 <div class="main-container">
     <div class="top-sale"><h1>Browse the top Games...</h1></div>
     <div class="top-sale-games-container">
@@ -22,9 +19,22 @@
                     <div class="game" (click)="openInfo(game)">
                         <div class="game-image">
                             <img [src]="game.background_image" [alt]="game.name" class="game-image">
+                            @if (game.metacritic) {
+                                <div class="metacritic-badge">{{ game.metacritic }}</div>
+                            }
                         </div>
-                        <div class="game-title"><h1>{{ game.name }}</h1></div>
-                        <div class="game-price"><p>Rating: {{ game.rating }}</p></div>
+                        <div class="game-info">
+                            <div class="game-title"><h1>{{ game.name }}</h1></div>
+                            <div class="game-details">
+                                @if (game.released) {
+                                    <span class="release-date">{{ game.released }}</span>
+                                }
+                                <span class="rating">
+                                    <ng-icon name="lucideStar" class="star-icon"></ng-icon>
+                                    {{ game.rating }}/5
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 }
                 
@@ -32,18 +42,26 @@
                     <button 
                         class="nav-arrow" 
                         (click)="store.nextPage()"
-                        [disabled]="store.currentPage() === Math.ceil(store.games().length / store.gamesPerPage()) - 1">
+                        [disabled]="store.currentPage() === Math.ceil(store.topGames().length / store.gamesPerPage()) - 1">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
                 </div>
             </div>
             
-            <div class="progress-container">
-                <div class="progress-bar"></div>
+            <div class="progress-bars-container">
+                @for (page of [0, 1, 2, 3, 4]; track page) {
+                    <div class="progress-bar-wrapper">
+                        <div 
+                            class="progress-bar" 
+                            [class.active]="store.currentPage() === page"
+                            [class.completed]="store.currentPage() > page">
+                        </div>
+                    </div>
+                }
             </div>
             
             <div class="page-indicator">
-                {{ store.currentPage() + 1 }} / {{ Math.ceil(store.games().length / store.gamesPerPage()) }}
+                {{ store.currentPage() + 1 }} / {{ Math.ceil(store.topGames().length / store.gamesPerPage()) }}
             </div>
         }
     </div>
